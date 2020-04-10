@@ -7,14 +7,15 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="longbowou.getnovissi.FirstFragment"
+        android:name="longbowou.getnovissi.ProcessingFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_processing">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/SecondFragment"
         android:name="longbowou.getnovissi.SecondFragment"
