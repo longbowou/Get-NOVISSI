@@ -17,9 +17,9 @@ class Async(
 
         Log.d(TAG, "Processing novissi $novissi")
 
-        val ussdApi = USSDController.getInstance(context)
+        val ussdApi = MyUSSDController.getInstance(context)
         ussdApi.callUSSDInvoke(
-            "*400#",
+            "*855#",
             1,
             map,
             object : USSDController.CallbackInvoke {
@@ -28,14 +28,14 @@ class Async(
                     Log.d(TAG, message)
                     asyncInterface?.onUpdate("Step Zero response", message)
 
-                    if (message.contains("Bienvenue Dans le Haut Débit de Moov")) {
+                    if (message.contains("Tapez 1 pour continuer")) {
                         ussdApi.send("1") { message_step_one ->
                             Log.d(TAG, "Step One response")
                             Log.d(TAG, message)
                             Log.d(TAG, message_step_one)
                             asyncInterface?.onUpdate("Step One response", message_step_one)
 
-                            if (message_step_one.contains("programme d'aide")) {
+                            if (message_step_one.contains("1- S'inscrire au programme d'aide")) {
                                 ussdApi.send("1") { message_step_two ->
                                     Log.d(TAG, "Step Two response")
                                     Log.d(TAG, message)
@@ -43,7 +43,7 @@ class Async(
                                     Log.d(TAG, message_step_two)
                                     asyncInterface?.onUpdate("Step Two response", message_step_two)
 
-                                    if (message_step_two.contains("0- Précédent")) {
+                                    if (message_step_two.contains("Veuillez saisir le numéro de la carte d'électeur")) {
                                         ussdApi.send(novissi.getValue("id_card")) { message_step_three ->
                                             Log.d(TAG, "Step Three response")
                                             Log.d(TAG, message)
