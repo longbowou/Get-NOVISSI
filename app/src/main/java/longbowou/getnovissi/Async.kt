@@ -17,7 +17,7 @@ class Async(
         Log.d(TAG, "Processing novissi $novissi")
 
         val ussdApi = MyUSSDController.getInstance(context)
-        ussdApi.callUSSDInvoke("*855#", 1, map, object : USSDController.CallbackInvoke {
+        ussdApi.callUSSDInvoke("*855#", 0, map, object : USSDController.CallbackInvoke {
             override fun responseInvoke(message: String) {
                 Log.d(TAG, "Step Zero Continue")
                 Log.d(TAG, message)
@@ -89,7 +89,7 @@ class Async(
                                                             "Step Five", message_step_five
                                                         )
 
-                                                        if (message_step_five.contains("prénoms ne correspond pas")) {
+                                                        if (message_step_five.contains("prénom ne correspond")) {
                                                             Log.d(
                                                                 TAG,
                                                                 "Novissi $novissi bad first name"
