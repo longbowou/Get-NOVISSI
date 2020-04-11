@@ -1,4 +1,4 @@
-package longbowou.getnovissi
+package longbowou.getnovissi.ussd
 
 import android.accessibilityservice.AccessibilityService
 import android.content.ClipData
@@ -11,13 +11,13 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.romellfudi.ussdlibrary.USSDController.Companion.KEY_ERROR
 import com.romellfudi.ussdlibrary.contains
 import com.romellfudi.ussdlibrary.toLowerCase
-import longbowou.getnovissi.MyUSSDController.Companion.KEY_LOGIN
+import longbowou.getnovissi.ussd.MyUSSDController.Companion.KEY_LOGIN
 import java.util.*
 
 class MyUSSDServiceKT : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        MyUSSDServiceKT.event = event
+        Companion.event = event
 
         Log.d(
             TAG, String.format(
@@ -31,22 +31,28 @@ class MyUSSDServiceKT : AccessibilityService() {
         if (instance == null
             || !instance!!.isRunning!!
         ) {
-            Log.d(
-                TAG, "service null instance"
-            )
             return
         }
 
-        if (loginView(event) && notInputText(event)) {
+        if (loginView(event) && notInputText(
+                event
+            )
+        ) {
             // first view or logView, do nothing, pass / FIRST MESSAGE
-            clickOnButton(event, 0)
+            clickOnButton(
+                event,
+                0
+            )
             instance!!.isRunning = false
             instance!!.callbackInvoke.over(
                 event.text[0].toString()
             )
         } else if (problemView(event) || loginView(event)) {
             // deal down
-            clickOnButton(event, 1)
+            clickOnButton(
+                event,
+                1
+            )
             instance!!.callbackInvoke.over(
                 event.text[0].toString()
             )
@@ -57,10 +63,16 @@ class MyUSSDServiceKT : AccessibilityService() {
                 response += text
             }
 
-            if (notInputText(event)) {
+            if (notInputText(
+                    event
+                )
+            ) {
                 // not more input panels / LAST MESSAGE
                 // sent 'OK' button
-                clickOnButton(event, 0)
+                clickOnButton(
+                    event,
+                    0
+                )
                 instance!!.isRunning = false
                 instance!!.callbackInvoke.over(
                     response
@@ -68,20 +80,12 @@ class MyUSSDServiceKT : AccessibilityService() {
             } else {
                 // sent option 1
                 if (instance!!.callbackMessage == null) {
-                    instance!!.callbackInvoke.responseInvoke(
-                        response
-                    )
-                    Log.d(
-                        TAG, "callbackInvoke.responseInvoke"
-                    )
+                    instance!!.callbackInvoke.responseInvoke(response)
+                    Log.d(TAG, "callbackInvoke")
                 } else {
-                    instance!!.callbackMessage!!.invoke(
-                        response
-                    )
+                    instance!!.callbackMessage!!.invoke(response)
 //                    instance!!.callbackMessage = null
-                    Log.d(
-                        TAG, "callbackInvoke.responseInvoke"
-                    )
+                    Log.d(TAG, "callbackMessage")
                 }
             }
         }
@@ -95,9 +99,6 @@ class MyUSSDServiceKT : AccessibilityService() {
      * @return boolean USSD Widget has login message
      */
     private fun loginView(event: AccessibilityEvent): Boolean {
-        Log.d(
-            TAG, "LoginView ${event.text[0]}"
-        )
         return (isUSSDWidget(event)
                 && instance!!.map!![KEY_LOGIN]!!.contains(event.text[0].toString()))
     }
@@ -121,9 +122,6 @@ class MyUSSDServiceKT : AccessibilityService() {
      * @return boolean AccessibilityEvent is USSD
      */
     private fun isUSSDWidget(event: AccessibilityEvent): Boolean {
-        Log.d(
-            TAG, "isUSSDWidget event class name ${event.className}"
-        )
         return event.className == "amigo.app.AmigoAlertDialog" || event.className == "android.app.AlertDialog"
     }
 
@@ -146,7 +144,7 @@ class MyUSSDServiceKT : AccessibilityService() {
 
         private var instance: MyUSSDController? = null
 
-        private val TAG = MyUSSDServiceKT::class.java.simpleName
+        val TAG = MyUSSDServiceKT::class.java.simpleName
 
         private var event: AccessibilityEvent? = null
 
@@ -157,12 +155,15 @@ class MyUSSDServiceKT : AccessibilityService() {
          * @param data  Any String
          */
         private fun setTextIntoField(event: AccessibilityEvent?, data: String?) {
-            val ussdController = instance
+            val ussdController =
+                instance
             val arguments = Bundle()
             arguments.putCharSequence(
                 AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, data
             )
-            for (leaf in getLeaves(event)) {
+            for (leaf in getLeaves(
+                event
+            )) {
                 if (leaf.className == "android.widget.EditText" && !leaf.performAction(
                         AccessibilityNodeInfo.ACTION_SET_TEXT, arguments
                     )
@@ -179,7 +180,10 @@ class MyUSSDServiceKT : AccessibilityService() {
             val leaves: MutableList<AccessibilityNodeInfo> =
                 ArrayList()
             if (event?.source != null) {
-                getLeaves(leaves, event.source)
+                getLeaves(
+                    leaves,
+                    event.source
+                )
             }
             return leaves
         }
@@ -193,13 +197,18 @@ class MyUSSDServiceKT : AccessibilityService() {
                 return
             }
             for (i in 0 until node.childCount) {
-                getLeaves(leaves, node.getChild(i))
+                getLeaves(
+                    leaves,
+                    node.getChild(i)
+                )
             }
         }
 
         fun notInputText(event: AccessibilityEvent?): Boolean {
             var flag = true
-            for (leaf in getLeaves(event)) {
+            for (leaf in getLeaves(
+                event
+            )) {
                 if (leaf.className == "android.widget.EditText") flag = false
             }
             return flag
@@ -213,7 +222,9 @@ class MyUSSDServiceKT : AccessibilityService() {
          */
         fun clickOnButton(event: AccessibilityEvent?, index: Int) {
             var count = -1
-            for (leaf in getLeaves(event)) {
+            for (leaf in getLeaves(
+                event
+            )) {
                 if (leaf.className.toString().toLowerCase().contains("button")) {
                     count++
                     if (count == index) {
@@ -229,8 +240,14 @@ class MyUSSDServiceKT : AccessibilityService() {
          * @param text any string
          */
         fun send(text: String?) {
-            setTextIntoField(event, text)
-            clickOnButton(event, 1)
+            setTextIntoField(
+                event,
+                text
+            )
+            clickOnButton(
+                event,
+                1
+            )
         }
 
         /**
@@ -238,7 +255,10 @@ class MyUSSDServiceKT : AccessibilityService() {
          *
          */
         fun cancel() {
-            clickOnButton(event, 0)
+            clickOnButton(
+                event,
+                0
+            )
         }
     }
 }

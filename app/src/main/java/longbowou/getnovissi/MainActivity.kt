@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import longbowou.getnovissi.fragments.ProcessingFragment
+import longbowou.getnovissi.ussd.MyUSSDController
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,7 +21,8 @@ class MainActivity : AppCompatActivity() {
 
         MyUSSDController.verifyAccesibilityAccess(this)
 
-        val processingFragment = ProcessingFragment()
+        val processingFragment =
+            ProcessingFragment()
 
         supportFragmentManager
             .beginTransaction()

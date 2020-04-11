@@ -6,8 +6,10 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.romellfudi.ussdlibrary.USSDController
+import longbowou.getnovissi.ussd.MyUSSDController
+import longbowou.getnovissi.ussd.MyUSSDServiceKT
 
-class Async(
+class ProcessNovissiAsyncTask(
     private var context: Context,
     private var map: java.util.HashMap<String, java.util.HashSet<String>>
 ) : AsyncTask<MutableMap<String, String>, Unit, Unit>() {
@@ -19,13 +21,14 @@ class Async(
 
         Log.d(TAG, "Processing novissi $novissi")
 
-        ussdController = MyUSSDController.getInstance(context)
+        ussdController = MyUSSDController.getInstance(context, true)
         ussdController.callUSSDInvoke("*855#", 0, map, object : USSDController.CallbackInvoke {
             override fun responseInvoke(message: String) {
                 fireUpdate("Step Zero Continue", message)
 
                 if (!message.contains("Tapez 1 pour continuer")) {
                     fireError(novissi, "On error Step Zero", message)
+                    return
                 }
 
                 ussdController.send("1") { message_step_one ->
@@ -33,6 +36,7 @@ class Async(
 
                     if (!message_step_one.contains("1- S'inscrire au programme d'aide")) {
                         fireError(novissi, "On error Step One", message_step_one)
+                        return@send
                     }
 
                     ussdController.send("1") { message_step_two ->
@@ -40,6 +44,7 @@ class Async(
 
                         if (!message_step_two.contains("Veuillez saisir le numéro de la carte d'électeur")) {
                             fireError(novissi, "On error Step Two", message_step_two)
+                            return@send
                         }
 
                         asyncInterface?.onUpdate(
@@ -49,11 +54,18 @@ class Async(
                             fireUpdate("Step Three", message_step_three)
 
                             if (message_step_three.contains("Numéro de carte non valide ou déja enregistré")) {
-                                logError(novissi, "id_card", "bad id card")
+                                logError(
+                                    novissi,
+                                    "id_card",
+                                    "bad id card",
+                                    "Step Three bad id card"
+                                )
+                                return@send
                             }
 
                             if (!message_step_three.contains("nom")) {
                                 fireError(novissi, "On error Step Three", message_step_three)
+                                return@send
                             }
 
                             asyncInterface?.onUpdate(
@@ -63,11 +75,18 @@ class Async(
                                 fireUpdate("Step Four", message_step_four)
 
                                 if (message_step_four.contains("nom ne correspond pas")) {
-                                    logError(novissi, "last_name", "bad last name")
+                                    logError(
+                                        novissi,
+                                        "last_name",
+                                        "bad last name",
+                                        "Step Four bad last name"
+                                    )
+                                    return@send
                                 }
 
                                 if (!message_step_four.contains("prénoms")) {
                                     fireError(novissi, "On error Step Four", message_step_four)
+                                    return@send
                                 }
 
                                 asyncInterface?.onUpdate(
@@ -78,11 +97,18 @@ class Async(
                                     fireUpdate("Step Five", message_step_five)
 
                                     if (message_step_five.contains("prénom ne correspond")) {
-                                        logError(novissi, "first_name", "bad first name")
+                                        logError(
+                                            novissi,
+                                            "first_name",
+                                            "bad first name",
+                                            "Step Five bad first name"
+                                        )
+                                        return@send
                                     }
 
                                     if (!message_step_five.contains("date")) {
                                         fireError(novissi, "On error Step Five", message_step_five)
+                                        return@send
                                     }
 
                                     asyncInterface?.onUpdate(
@@ -93,7 +119,13 @@ class Async(
                                         fireUpdate("Step Six", message_step_six)
 
                                         if (message_step_six.contains("date ne correspond pas")) {
-                                            logError(novissi, "born_at", "bad born at date")
+                                            logError(
+                                                novissi,
+                                                "born_at",
+                                                "bad born at date",
+                                                "Step Six bad born at date"
+                                            )
+                                            return@send
                                         }
 
                                         if (!message_step_six.contains("mère")) {
@@ -102,6 +134,7 @@ class Async(
                                                 "On error Step Six",
                                                 message_step_six
                                             )
+                                            return@send
                                         }
 
                                         asyncInterface?.onUpdate(
@@ -112,7 +145,13 @@ class Async(
                                             fireUpdate("Step Seven", message_step_seven)
 
                                             if (message_step_seven.contains("mère incorrect")) {
-                                                logError(novissi, "mother", "bad mother name")
+                                                logError(
+                                                    novissi,
+                                                    "mother",
+                                                    "bad mother name",
+                                                    "Step Seven bad mother name"
+                                                )
+                                                return@send
                                             }
 
                                             if (!message_step_seven.contains("TMoney ou Flooz")) {
@@ -121,6 +160,7 @@ class Async(
                                                     "On error Step Seven",
                                                     message_step_seven
                                                 )
+                                                return@send
                                             }
 
                                             asyncInterface?.onUpdate(
@@ -136,6 +176,7 @@ class Async(
                                                         "On error Step Eight",
                                                         message_step_eight
                                                     )
+                                                    return@send
                                                 }
 
                                                 asyncInterface?.onUpdate(
@@ -149,8 +190,10 @@ class Async(
                                                         logError(
                                                             novissi,
                                                             "phone_number",
-                                                            "phone number has reach limit"
+                                                            "phone number has reach limit",
+                                                            "Step Nine phone number has reach limit"
                                                         )
+                                                        return@send
                                                     }
 
                                                     novissi["processed"] = "Yes"
@@ -179,10 +222,10 @@ class Async(
         Log.d(TAG, message)
         asyncInterface?.onError(novissi)
         ussdController.cancel()
-        ussdController.callbackMessage = null
     }
 
     private fun fireUpdate(level: String, message: String) {
+        Log.d(MyUSSDServiceKT.TAG, level)
         Log.d(TAG, level)
         Log.d(TAG, message)
         asyncInterface?.onUpdate(level, message)
@@ -191,8 +234,11 @@ class Async(
     private fun logError(
         novissi: MutableMap<String, String>,
         errorKey: String,
-        errorMessage: String
+        errorMessage: String,
+        level: String
     ) {
+        asyncInterface?.onUpdate(level, errorMessage)
+        Log.d(TAG, "Novissi $novissi $errorMessage")
         if (novissi["errors"] == null) {
             novissi["errors"] = Gson().toJson(mapOf(errorKey to errorMessage))
         } else {
@@ -204,10 +250,8 @@ class Async(
             errors[errorKey] = errorMessage
             novissi["errors"] = Gson().toJson(errors)
         }
-        Log.d(TAG, "Novissi $novissi $errorMessage")
         asyncInterface?.onProcessed(novissi)
         ussdController.cancel()
-        ussdController.callbackMessage = null
     }
 
     interface AsyncInterface {
@@ -217,6 +261,6 @@ class Async(
     }
 
     companion object {
-        const val TAG = "ASYNC"
+        val TAG = ProcessNovissiAsyncTask::class.java.simpleName
     }
 }

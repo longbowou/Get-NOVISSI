@@ -1,4 +1,4 @@
-package longbowou.getnovissi
+package longbowou.getnovissi.ussd
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -80,7 +80,10 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
     ) {
         this.callbackInvoke = callbackInvoke
         this.map = map
-        if (verifyAccesibilityAccess(context)) {
+        if (verifyAccesibilityAccess(
+                context
+            )
+        ) {
             dialUp(ussdPhoneNumber, simSlot)
         } else {
             this.callbackInvoke.over("Check your accessibility")
@@ -105,7 +108,12 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
     ) {
         this.callbackInvoke = callbackInvoke
         this.map = map
-        if (verifyAccesibilityAccess(context) && verifyOverLay(context)) {
+        if (verifyAccesibilityAccess(
+                context
+            ) && verifyOverLay(
+                context
+            )
+        ) {
             dialUp(ussdPhoneNumber, simSlot)
         } else {
             this.callbackInvoke.over("Check your accessibility | overlay permission")
@@ -122,7 +130,10 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
      */
     private fun dialUp(ussdPhoneNumber: String, simSlot: Int) {
         var ussdPhoneNumber = ussdPhoneNumber
-        if (map == null || !map!!.containsKey(KEY_ERROR) || !map!!.containsKey(KEY_LOGIN)) {
+        if (map == null || !map!!.containsKey(KEY_ERROR) || !map!!.containsKey(
+                KEY_LOGIN
+            )
+        ) {
             this.callbackInvoke.over("Bad Mapping structure")
             return
         }
@@ -208,9 +219,9 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
         // singleton reference
         var instance: MyUSSDController? = null
 
-        val KEY_LOGIN = "KEY_LOGIN"
+        const val KEY_LOGIN = "KEY_LOGIN"
 
-        val KEY_ERROR = "KEY_ERROR"
+        const val KEY_ERROR = "KEY_ERROR"
 
         /**
          * The Singleton building method
@@ -218,17 +229,23 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
          * @param context An activity that could call
          * @return An instance of USSDController
          */
-        fun getInstance(context: Context): MyUSSDController {
-            if (instance == null)
-                instance = MyUSSDController(context)
+        fun getInstance(context: Context, new: Boolean = false): MyUSSDController {
+            if (new || instance == null)
+                instance =
+                    MyUSSDController(context)
             return instance as MyUSSDController
         }
 
         fun verifyAccesibilityAccess(context: Context): Boolean {
-            val isEnabled = isAccessiblityServicesEnable(context)
+            val isEnabled =
+                isAccessiblityServicesEnable(
+                    context
+                )
             if (!isEnabled) {
                 if (context is Activity) {
-                    openSettingsAccessibility(context)
+                    openSettingsAccessibility(
+                        context
+                    )
                 } else {
                     Toast.makeText(
                         context, "voipUSSD accessibility service is not enabled",
@@ -244,7 +261,9 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
                     && !Settings.canDrawOverlays(context)
             return if (notGrant) {
                 if (context is Activity) {
-                    openSettingsOverlay(context)
+                    openSettingsOverlay(
+                        context
+                    )
                 } else {
                     Toast.makeText(
                         context,
@@ -260,7 +279,10 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
         private fun openSettingsAccessibility(activity: Activity) {
             val alertDialogBuilder = AlertDialog.Builder(activity)
             alertDialogBuilder.setTitle("USSD Accessibility permission")
-            val name = getNameApp(activity)
+            val name =
+                getNameApp(
+                    activity
+                )
             alertDialogBuilder
                 .setMessage("You must enable accessibility permissions for the app '$name'")
             alertDialogBuilder.setCancelable(true)
@@ -276,7 +298,10 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
         private fun openSettingsOverlay(activity: Activity) {
             val alertDialogBuilder = AlertDialog.Builder(activity)
             alertDialogBuilder.setTitle("USSD Overlay permission")
-            val name = getNameApp(activity)
+            val name =
+                getNameApp(
+                    activity
+                )
             alertDialogBuilder
                 .setMessage("You must allow for the app to appear '$name' on top of other apps.")
             alertDialogBuilder.setCancelable(true)
@@ -300,14 +325,16 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
                 activity.getString(stringId)
         }
 
-
         protected fun isAccessiblityServicesEnable(context: Context): Boolean {
             val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE)
             if (am != null) {
                 val am = am as AccessibilityManager
                 for (service in am.installedAccessibilityServiceList) {
                     if (service.id.contains(context.packageName)) {
-                        return isAccessibilitySettingsOn(context, service.id.replace("/", ""))
+                        return isAccessibilitySettingsOn(
+                            context,
+                            service.id.replace("/", "")
+                        )
                     }
                 }
             }
