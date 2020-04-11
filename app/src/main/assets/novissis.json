@@ -497,7 +497,8 @@
     "first_name": "RACHIDATOU",
     "born_at": "05/04/1994",
     "mother": "IDRISSA",
-    "phone_number": "93039181"
+    "phone_number": "93039181",
+    "errors": "{\"id_card\":\"bad id card\"}"
   },
   {
     "id_card": "1-108-02-00-04-01-03-00189",
@@ -514,11 +515,12 @@
     "first_name": "AKOUVI",
     "born_at": "31/12/1993",
     "mother": "AKOSSIWA",
-    "phone_number": "99549745"
+    "phone_number": "99549745",
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-03-00-03-01-33-02010",
-    "last_name": "BADJEDJI",
+    "last_name": "BADEDJI",
     "first_name": "KODJO",
     "born_at": "14/12/1981",
     "mother": "KALIPE",
@@ -530,6 +532,7 @@
     "first_name": "KOKOE",
     "born_at": "21/03/1960",
     "mother": "NOUNAGNON",
-    "phone_number": "90784613"
+    "phone_number": "90784613",
+    "processed": "Yes"
   }
 ]
