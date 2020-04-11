@@ -1,19 +1,25 @@
 package longbowou.getnovissi
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_processing.*
+import java.io.File
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class ProcessingFragment : Fragment() {
 
-    private val novissis = mutableListOf(
+    var TAG = "ProcessingFragment"
+    private var novissis = mutableListOf(
         //BLANDES
         mutableMapOf(
             "id_card" to "1-108-03-00-99-01-01-00008",
@@ -354,6 +360,16 @@ class ProcessingFragment : Fragment() {
             "mother" to "AMEDIN",
             "phone_number" to "92280206"
         ),
+        //CCK
+        mutableMapOf(
+            "id_card" to "1-107-01-00-04-02-72-58001",
+            "last_name" to "LAOUDIMA",
+            "first_name" to "ATANI SAMTOU",
+            "born_at" to "06/02/1996",
+            "mother" to "TCHADJO",
+            "phone_number" to "90435991",
+            "processed" to "Yes"
+        ),
         //OTHER
         mutableMapOf(
             "id_card" to "1-108-04-00-01-02-06-00366",
@@ -470,11 +486,57 @@ class ProcessingFragment : Fragment() {
 
         map["KEY_LOGIN"] = HashSet(listOf())
         map["KEY_ERROR"] = HashSet(listOf())
+
+        val defaultNovissis = context?.assets?.open("novissis.json")?.bufferedReader().use { it?.readText() }
+        val savedNovissis = context?.getSharedPreferences(
+            NOVISSIS,
+            Context.MODE_PRIVATE
+        )?.getString(NOVISSIS, defaultNovissis)
+        val typeConverter = object : TypeToken<MutableList<MutableMap<String, String>>>() {}.type
+        novissis = Gson().fromJson(savedNovissis, typeConverter)
+
+        if (savedNovissis != null) {
+            loggSavedNovissis(savedNovissis)
+        }
+    }
+
+    private fun loggSavedNovissis(novissis: String) {
+        Log.d(TAG, "Saved Novissis")
+        val maxLenth = 4000
+        if (novissis.length > maxLenth) {
+            val chunkCount: Int = novissis.length / maxLenth // integer division
+            for (i in 0..chunkCount) {
+                val max = maxLenth * (i + 1)
+                if (max >= novissis.length) {
+                    Log.d(
+                        TAG,
+                        novissis.substring(maxLenth * i)
+                    )
+                } else {
+                    Log.d(
+                        TAG,
+                        novissis.substring(maxLenth * i, max)
+                    )
+                }
+            }
+        } else {
+            Log.d(TAG, novissis)
+        }
+    }
+
+    private fun saveNovissis() {
+        val novissisJson = Gson().toJson(novissis)
+        context?.getSharedPreferences(NOVISSIS, Context.MODE_PRIVATE)
+            ?.edit()?.putString(NOVISSIS, novissisJson)
+            ?.apply()
+        val novissisJsonFile = File(context?.filesDir, "novissis.json")
+        novissisJsonFile.writeText(novissisJson)
     }
 
     fun launchNovissiProcessing(novissi: MutableMap<String, String>? = null) {
         var index = 0
         if (novissi !== null) {
+            saveNovissis()
             index = novissis.indexOf(novissi)
             index++
         }
@@ -541,5 +603,9 @@ class ProcessingFragment : Fragment() {
             step_textview.text = getString(R.string.init)
             async.execute(novissi)
         }
+    }
+
+    companion object {
+        const val NOVISSIS = "NOVISSIS"
     }
 }

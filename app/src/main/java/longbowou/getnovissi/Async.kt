@@ -3,6 +3,8 @@ package longbowou.getnovissi
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.romellfudi.ussdlibrary.USSDController
 
 class Async(
@@ -47,7 +49,7 @@ class Async(
                                         )
 
                                         if (message_step_three.contains("Numéro de carte non valide ou déja enregistré")) {
-                                            Log.d(TAG, "Novissi $novissi already bad id card")
+                                            updateError(novissi, "id_card", "bad id card")
                                             ussdApi.cancel()
                                             asyncInterface?.onProcessed(novissi)
                                             ussdApi.callbackMessage = null
@@ -67,8 +69,10 @@ class Async(
                                                 )
 
                                                 if (message_step_four.contains("nom ne correspond pas")) {
-                                                    Log.d(
-                                                        TAG, "Novissi $novissi bad last name"
+                                                    updateError(
+                                                        novissi,
+                                                        "last_name",
+                                                        "bad last name"
                                                     )
                                                     ussdApi.cancel()
                                                     asyncInterface?.onProcessed(novissi)
@@ -90,9 +94,10 @@ class Async(
                                                         )
 
                                                         if (message_step_five.contains("prénom ne correspond")) {
-                                                            Log.d(
-                                                                TAG,
-                                                                "Novissi $novissi bad first name"
+                                                            updateError(
+                                                                novissi,
+                                                                "first_name",
+                                                                "bad first name"
                                                             )
                                                             ussdApi.cancel()
                                                             asyncInterface?.onProcessed(novissi)
@@ -114,9 +119,10 @@ class Async(
                                                                 )
 
                                                                 if (message_step_six.contains("date ne correspond pas")) {
-                                                                    Log.d(
-                                                                        TAG,
-                                                                        "Novissi $novissi bad born at"
+                                                                    updateError(
+                                                                        novissi,
+                                                                        "born_at",
+                                                                        "bad born at date"
                                                                     )
                                                                     ussdApi.cancel()
                                                                     asyncInterface?.onProcessed(
@@ -150,9 +156,10 @@ class Async(
                                                                                 "mère incorrect"
                                                                             )
                                                                         ) {
-                                                                            Log.d(
-                                                                                TAG,
-                                                                                "Novissi $novissi bad mother name"
+                                                                            updateError(
+                                                                                novissi,
+                                                                                "mother",
+                                                                                "bad mother name"
                                                                             )
                                                                             ussdApi.cancel()
                                                                             asyncInterface?.onProcessed(
@@ -168,7 +175,7 @@ class Async(
                                                                         ) {
                                                                             asyncInterface?.onUpdate(
                                                                                 "Step Seven TMoney ou Flooz",
-                                                                                message_step_six
+                                                                                message_step_seven
                                                                             )
                                                                             ussdApi.send("2") { message_step_eight ->
                                                                                 Log.d(
@@ -306,6 +313,25 @@ class Async(
                 ussdApi.callbackMessage = null
             }
         })
+    }
+
+    private fun updateError(
+        novissi: MutableMap<String, String>,
+        errorKey: String,
+        errorMessage: String
+    ) {
+        if (novissi["errors"] == null) {
+            novissi["errors"] = Gson().toJson(mapOf(errorKey to errorMessage))
+        } else {
+            val typeConverter = object : TypeToken<MutableMap<String, String>>() {}.type
+            val errors: MutableMap<String, String> = Gson().fromJson(
+                novissi["errors"],
+                typeConverter
+            )
+            errors[errorKey] = errorMessage
+            novissi["errors"] = Gson().toJson(errors)
+        }
+        Log.d(TAG, "Novissi $novissi $errorMessage")
     }
 
     interface AsyncInterface {

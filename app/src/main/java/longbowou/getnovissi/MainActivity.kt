@@ -55,7 +55,9 @@ class MainActivity : AppCompatActivity() {
                     arrayOf(
                         Manifest.permission.CALL_PHONE,
                         Manifest.permission.SYSTEM_ALERT_WINDOW,
-                        Manifest.permission.READ_PHONE_STATE
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ),
                     1
                 )
