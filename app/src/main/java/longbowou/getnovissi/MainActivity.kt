@@ -8,7 +8,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import longbowou.getnovissi.fragments.NovissisFragment
 import longbowou.getnovissi.fragments.ProcessingFragment
 import longbowou.getnovissi.ussd.MyUSSDController
 
@@ -24,10 +29,12 @@ class MainActivity : AppCompatActivity() {
         val processingFragment =
             ProcessingFragment()
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.nav_host_fragment, processingFragment)
-            .commit()
+        val novissisFragment =
+            NovissisFragment()
+
+        val viewPagerAdapter =
+            ViewPagerAdapter(supportFragmentManager, listOf(processingFragment, novissisFragment))
+        view_pager.adapter = viewPagerAdapter
 
         fab.setOnClickListener { view ->
             processingFragment.launchNovissiProcessing()
@@ -88,5 +95,12 @@ class MainActivity : AppCompatActivity() {
             R.id.action_about -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    class ViewPagerAdapter(fm: FragmentManager, var fragments: List<Fragment>) :
+        FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        override fun getCount(): Int = fragments.count()
+
+        override fun getItem(position: Int): Fragment = fragments[position]
     }
 }

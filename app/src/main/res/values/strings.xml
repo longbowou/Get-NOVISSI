@@ -9,6 +9,7 @@
     <string name="previous">Previous</string>
 
     <string name="processing_title">Novissi In Process</string>
+    <string name="novissis_title">Novissis</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="my_accessibility_service_description">
         Enable permissions from use USSD
