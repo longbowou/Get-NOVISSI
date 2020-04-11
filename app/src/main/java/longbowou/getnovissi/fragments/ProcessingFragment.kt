@@ -22,7 +22,7 @@ class ProcessingFragment : Fragment() {
 
     private lateinit var novissis: MutableList<MutableMap<String, String>>
     private var isProcessing = false
-    private var delay = 2000L
+    private var delay = 3000L
 
     private val map = HashMap<String, java.util.HashSet<String>>()
 
@@ -103,6 +103,7 @@ class ProcessingFragment : Fragment() {
         }
 
         if (index >= novissis.count()) {
+            updateUi()
             return
         }
 
@@ -115,19 +116,38 @@ class ProcessingFragment : Fragment() {
 
             index++
             if (index >= novissis.count()) {
+                updateUi()
                 return
             }
             nextNovissi = novissis[index]
         }
     }
 
-    private fun updateUi(novissi: MutableMap<String, String>) {
-        id_card.text = novissi["id_card"]
-        last_name.text = novissi["last_name"]
-        first_name.text = novissi["first_name"]
-        born_at.text = novissi["born_at"]
-        mother.text = novissi["mother"]
-        phone_number.text = novissi["phone_number"]
+    private fun updateUi(
+        novissi: MutableMap<String, String>? = null,
+        isRestarting: Boolean = false
+    ) {
+        if (novissi != null) {
+            id_card.text = novissi["id_card"]
+            last_name.text = novissi["last_name"]
+            first_name.text = novissi["first_name"]
+            born_at.text = novissi["born_at"]
+            mother.text = novissi["mother"]
+            phone_number.text = novissi["phone_number"]
+            step_textview.text = getString(R.string.init)
+            novissi_details_layout.visibility = View.VISIBLE
+            empty_layout.visibility = View.GONE
+        } else {
+            id_card.text = null
+            last_name.text = null
+            first_name.text = null
+            born_at.text = null
+            mother.text = null
+            phone_number.text = null
+            step_textview.text = if (isRestarting) getString(R.string.restarting) else null
+            novissi_details_layout.visibility = View.GONE
+            empty_layout.visibility = View.VISIBLE
+        }
     }
 
     private fun processNovissi(
@@ -144,7 +164,7 @@ class ProcessingFragment : Fragment() {
 
             override fun onProcessed(novissi: MutableMap<String, String>) {
                 isProcessing = false
-                step_textview.text = getString(R.string.restarting)
+                updateUi(isRestarting = true)
                 Handler().postDelayed({
                     launchNovissiProcessing(novissi)
                 }, delay)
@@ -152,7 +172,7 @@ class ProcessingFragment : Fragment() {
 
             override fun onError(novissi: MutableMap<String, String>) {
                 isProcessing = false
-                step_textview.text = getString(R.string.restarting)
+                updateUi(isRestarting = true)
                 Handler().postDelayed({
                     processNovissi(novissi, map)
                 }, delay)
@@ -161,7 +181,6 @@ class ProcessingFragment : Fragment() {
 
         if (!isProcessing) {
             isProcessing = true
-            step_textview.text = getString(R.string.init)
             updateUi(novissi)
             async.execute(novissi)
         }
