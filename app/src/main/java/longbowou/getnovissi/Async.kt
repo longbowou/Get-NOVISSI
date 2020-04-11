@@ -20,7 +20,7 @@ class Async(
         Log.d(TAG, "Processing novissi $novissi")
 
         ussdController = MyUSSDController.getInstance(context)
-        ussdController.callUSSDInvoke("*855#", 1, map, object : USSDController.CallbackInvoke {
+        ussdController.callUSSDInvoke("*855#", 0, map, object : USSDController.CallbackInvoke {
             override fun responseInvoke(message: String) {
                 fireUpdate("Step Zero Continue", message)
 
@@ -144,9 +144,18 @@ class Async(
                                                 )
                                                 ussdController.send(novissi.getValue("phone_number")) { message_step_nine ->
                                                     fireUpdate("Step Nine", message_step_nine)
+
+                                                    if (message_step_nine.contains("Désolé, ce numéro a atteint la limite")) {
+                                                        logError(
+                                                            novissi,
+                                                            "phone_number",
+                                                            "phone number has reach limit"
+                                                        )
+                                                    }
+
                                                     novissi["processed"] = "Yes"
-                                                    ussdController.callbackMessage = null
                                                     ussdController.cancel()
+                                                    ussdController.callbackMessage = null
                                                     asyncInterface?.onProcessed(novissi)
                                                 }
                                             }
@@ -169,8 +178,8 @@ class Async(
         Log.d(TAG, level)
         Log.d(TAG, message)
         asyncInterface?.onError(novissi)
-        ussdController.callbackMessage = null
         ussdController.cancel()
+        ussdController.callbackMessage = null
     }
 
     private fun fireUpdate(level: String, message: String) {
@@ -197,8 +206,8 @@ class Async(
         }
         Log.d(TAG, "Novissi $novissi $errorMessage")
         asyncInterface?.onProcessed(novissi)
-        ussdController.callbackMessage = null
         ussdController.cancel()
+        ussdController.callbackMessage = null
     }
 
     interface AsyncInterface {

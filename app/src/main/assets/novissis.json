@@ -23,7 +23,9 @@
     "first_name": "KODJO",
     "born_at": "31/12/1965",
     "mother": "OTCHONA",
-    "phone_number": "90930267"
+    "phone_number": "90930267",
+    "errors": "{\"id_card\":\"bad id card\"}",
+    "processed": "Yes"
   },
   {
     "id_card": "3-004-01-00-08-02-62-97227",
@@ -32,7 +34,8 @@
     "born_at": "31/12/1998",
     "mother": "OKPAPA",
     "phone_number": "97344136",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "errors": "{\"id_card\":\"bad id card\"}",
+    "processed": "Yes"
   },
   {
     "id_card": "3-004-01-00-01-01-02-00031",
@@ -41,7 +44,8 @@
     "born_at": "31/12/1966",
     "mother": "KPAKPABIA",
     "phone_number": "90077002",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "errors": "{\"id_card\":\"bad id card\"}",
+    "processed": "Yes"
   },
   {
     "id_card": "3-004-01-00-01-01-02-00092",
@@ -122,7 +126,7 @@
     "born_at": "03/10/1997",
     "mother": "SEGBADA",
     "phone_number": "91313199",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-05-00-01-04-02-00106",
@@ -131,16 +135,17 @@
     "born_at": "11/11/1997",
     "mother": "SOFIADAN",
     "phone_number": "98600969",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "errors": "{\"id_card\":\"bad id card\"}",
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-05-00-04-02-04-00673",
     "last_name": "AGBANAGLO",
     "first_name": "ABLA CLEMENTINE",
-    "born_at": "23/11/1996",
+    "born_at": "23/11/1999",
     "mother": "AMETEKU",
     "phone_number": "90329749",
-    "errors": "{\"born_at\":\"bad born at date\"}"
+    "processed": "Yes"
   },
   {
     "id_card": "1-107-05-00-02-01-02-00740",
@@ -175,7 +180,8 @@
     "first_name": "HOUEVI",
     "born_at": "15/10/1967",
     "mother": "MESSAN",
-    "phone_number": "99278674"
+    "phone_number": "99278674",
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-07-00-10-80-18-02599",
@@ -256,16 +262,27 @@
     "born_at": "31/12/1967",
     "mother": "BOSSRO",
     "phone_number": "91706639",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "errors": "{\"id_card\":\"bad id card\"}",
+    "processed": "Yes"
   },
   {
     "id_card": "1-107-01-00-04-05-01-00479",
     "last_name": "ADOYI",
-    "first_name": "ABDEL-M. BAYAILLE",
+    "first_name": "ABDEL-M BAYAILLE",
     "born_at": "22/09/1979",
-    "mother": "ADAM",
+    "mother": "ADAM SALAMATOU",
     "phone_number": "90992177",
-    "errors": "{\"first_name\":\"bad first name\"}"
+    "errors": "{\"first_name\":\"bad first name\"}",
+    "processed": "Yes"
+  },
+  {
+    "id_card": "1-107-01-00-04-02-04-00404",
+    "last_name": "AYAO",
+    "first_name": "PYALO",
+    "born_at": "12/11/1985",
+    "mother": "GADJIN",
+    "phone_number": "91169484",
+    "processed": "Yes"
   },
   {
     "id_card": "2-001-01-00-01-01-01-00027",
@@ -473,5 +490,46 @@
     "mother": "GBOUGBO",
     "phone_number": "98992311",
     "processed": "Yes"
+  },
+  {
+    "id_card": "1-107-01-00-01-98-04-00841",
+    "last_name": "DARFOU",
+    "first_name": "RACHIDATOU",
+    "born_at": "05/04/1994",
+    "mother": "IDRISSA",
+    "phone_number": "93039181"
+  },
+  {
+    "id_card": "1-108-02-00-04-01-03-00189",
+    "last_name": "KPATCHA",
+    "first_name": "ESSODINAM",
+    "born_at": "24/03/1998",
+    "mother": "FADOU",
+    "phone_number": "93039181",
+    "processed": "Yes"
+  },
+  {
+    "id_card": "1-108-06-00-04-02-06-00016",
+    "last_name": "ADOTE",
+    "first_name": "AKOUVI",
+    "born_at": "31/12/1993",
+    "mother": "AKOSSIWA",
+    "phone_number": "99549745"
+  },
+  {
+    "id_card": "1-108-03-00-03-01-33-02010",
+    "last_name": "BADJEDJI",
+    "first_name": "KODJO",
+    "born_at": "14/12/1981",
+    "mother": "KALIPE",
+    "phone_number": "96212922"
+  },
+  {
+    "id_card": "1-108-01-00-26-03-02-00252",
+    "last_name": "D'ALMEIDA",
+    "first_name": "KOKOE",
+    "born_at": "21/03/1960",
+    "mother": "NOUNAGNON",
+    "phone_number": "90784613"
   }
 ]
