@@ -20,26 +20,26 @@ class Async(
         Log.d(TAG, "Processing novissi $novissi")
 
         ussdController = MyUSSDController.getInstance(context)
-        ussdController.callUSSDInvoke("*855#", 0, map, object : USSDController.CallbackInvoke {
+        ussdController.callUSSDInvoke("*855#", 1, map, object : USSDController.CallbackInvoke {
             override fun responseInvoke(message: String) {
                 fireUpdate("Step Zero Continue", message)
 
                 if (!message.contains("Tapez 1 pour continuer")) {
-                    fireError(novissi, "On error Step Zero")
+                    fireError(novissi, "On error Step Zero", message)
                 }
 
                 ussdController.send("1") { message_step_one ->
                     fireUpdate("Step One Continue", message_step_one)
 
                     if (!message_step_one.contains("1- S'inscrire au programme d'aide")) {
-                        fireError(novissi, "On error Step One")
+                        fireError(novissi, "On error Step One", message_step_one)
                     }
 
                     ussdController.send("1") { message_step_two ->
                         fireUpdate("Step Two Register", message_step_two)
 
                         if (!message_step_two.contains("Veuillez saisir le numéro de la carte d'électeur")) {
-                            fireError(novissi, "On error Step Two")
+                            fireError(novissi, "On error Step Two", message_step_two)
                         }
 
                         asyncInterface?.onUpdate(
@@ -53,7 +53,7 @@ class Async(
                             }
 
                             if (!message_step_three.contains("nom")) {
-                                fireError(novissi, "On error Step Three")
+                                fireError(novissi, "On error Step Three", message_step_three)
                             }
 
                             asyncInterface?.onUpdate(
@@ -67,7 +67,7 @@ class Async(
                                 }
 
                                 if (!message_step_four.contains("prénoms")) {
-                                    fireError(novissi, "On error Step Four")
+                                    fireError(novissi, "On error Step Four", message_step_four)
                                 }
 
                                 asyncInterface?.onUpdate(
@@ -82,7 +82,7 @@ class Async(
                                     }
 
                                     if (!message_step_five.contains("date")) {
-                                        fireError(novissi, "On error Step Five")
+                                        fireError(novissi, "On error Step Five", message_step_five)
                                     }
 
                                     asyncInterface?.onUpdate(
@@ -97,7 +97,11 @@ class Async(
                                         }
 
                                         if (!message_step_six.contains("mère")) {
-                                            fireError(novissi, "On error Step Six")
+                                            fireError(
+                                                novissi,
+                                                "On error Step Six",
+                                                message_step_six
+                                            )
                                         }
 
                                         asyncInterface?.onUpdate(
@@ -112,7 +116,11 @@ class Async(
                                             }
 
                                             if (!message_step_seven.contains("TMoney ou Flooz")) {
-                                                fireError(novissi, "On error Step Seven")
+                                                fireError(
+                                                    novissi,
+                                                    "On error Step Seven",
+                                                    message_step_seven
+                                                )
                                             }
 
                                             asyncInterface?.onUpdate(
@@ -123,7 +131,11 @@ class Async(
                                                 fireUpdate("Step Eight", message_step_eight)
 
                                                 if (!message_step_eight.contains("indicatif")) {
-                                                    fireError(novissi, "On error Step Eight")
+                                                    fireError(
+                                                        novissi,
+                                                        "On error Step Eight",
+                                                        message_step_eight
+                                                    )
                                                 }
 
                                                 asyncInterface?.onUpdate(
@@ -148,12 +160,13 @@ class Async(
             }
 
             override fun over(message: String) {
-                fireError(novissi, "On error")
+                fireError(novissi, "On error", message)
             }
         })
     }
 
-    private fun fireError(novissi: MutableMap<String, String>, message: String) {
+    private fun fireError(novissi: MutableMap<String, String>, level: String, message: String) {
+        Log.d(TAG, level)
         Log.d(TAG, message)
         asyncInterface?.onError(novissi)
         ussdController.callbackMessage = null
