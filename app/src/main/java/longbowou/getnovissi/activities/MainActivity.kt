@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, NovissiActivity::class.java))
         }
 
+        fab_stop.setOnClickListener {
+            processingFragment.stop()
+        }
+
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(
                 this,

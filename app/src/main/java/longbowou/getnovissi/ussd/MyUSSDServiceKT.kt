@@ -81,11 +81,8 @@ class MyUSSDServiceKT : AccessibilityService() {
                 // sent option 1
                 if (instance!!.callbackMessage == null) {
                     instance!!.callbackInvoke.responseInvoke(response)
-                    Log.d(TAG, "callbackInvoke")
                 } else {
                     instance!!.callbackMessage!!.invoke(response)
-//                    instance!!.callbackMessage = null
-                    Log.d(TAG, "callbackMessage")
                 }
             }
         }

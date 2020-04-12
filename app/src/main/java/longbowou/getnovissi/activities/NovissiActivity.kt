@@ -85,7 +85,9 @@ class NovissiActivity :
             novissi!!["phone_number"] = phone_number.text.toString().trim().toUpperCase(Locale.ROOT)
 
             if (phone_number.text.toString().isNotEmpty()) {
-                novissi!!["error"] = phone_number.text.toString().trim()
+                novissi!!["errors"] = phone_number.text.toString().trim()
+            } else {
+                novissi!!.remove("errors")
             }
 
             if (processed.isChecked) {

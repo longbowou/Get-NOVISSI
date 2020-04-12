@@ -3,14 +3,13 @@ package longbowou.getnovissi.fragments
 import android.content.Context
 import android.os.Bundle
 import android.telephony.TelephonyManager
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,19 +29,20 @@ class NovissisFragment : Fragment() {
 
     lateinit var novissis: MutableList<MutableMap<String, String>>
     private var novissiAdapter: NovissiAdapter? = null
+    private lateinit var fragmentView: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_novissis, container, false)
+        fragmentView = inflater.inflate(R.layout.fragment_novissis, container, false)
 
         novissis = context!!.getNovissis()
         novissiAdapter = NovissiAdapter(novissis)
-        view?.recycle_view?.layoutManager = LinearLayoutManager(context)
-        view?.recycle_view?.adapter = novissiAdapter
+        fragmentView.recycle_view?.layoutManager = LinearLayoutManager(context)
+        fragmentView.recycle_view?.adapter = novissiAdapter
 
-        view?.recycle_view?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        fragmentView.recycle_view?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
@@ -64,9 +64,10 @@ class NovissisFragment : Fragment() {
             }
         }
 
-        view.spinner.adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, simList)
-        view.spinner.setSelection(ProcessNovissiAsyncTask.simSlot)
-        view.spinner.onItemSelectedListener = object : OnItemSelectedListener {
+        fragmentView.spinner.adapter =
+            ArrayAdapter(context!!, android.R.layout.simple_list_item_1, simList)
+        fragmentView.spinner.setSelection(ProcessNovissiAsyncTask.simSlot)
+        fragmentView.spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
@@ -81,48 +82,74 @@ class NovissisFragment : Fragment() {
             }
         }
 
-        view.search_edit_text.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val searchFor = view.search_edit_text.text
-                if (searchFor.isNotEmpty()) {
-                    val filterNovissis = mutableListOf<MutableMap<String, String>>()
-                    for (novissi in novissis) {
-                        if (novissi["id_card"]!!.contains(searchFor, true) ||
-                            novissi["last_name"]!!.contains(searchFor, true) ||
-                            novissi["first_name"]!!.contains(searchFor, true) ||
-                            novissi["born_at"]!!.contains(searchFor, true) ||
-                            novissi["mother"]!!.contains(searchFor, true) ||
-                            novissi["phone_number"]!!.contains(searchFor, true)
-                        ) {
-                            filterNovissis.add(novissi)
-                        }
-                    }
-                    novissiAdapter?.update(filterNovissis)
-                } else {
-                    novissiAdapter?.update(novissis)
-                }
-            }
+        fragmentView.search_edit_text.addTextChangedListener {
+            filterNovissis()
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+        fragmentView.unprocessed_checkBox.setOnCheckedChangeListener { _, _ ->
+            filterNovissis()
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
-
-        view.swipe_refresh.setOnRefreshListener {
+        fragmentView.swipe_refresh.setOnRefreshListener {
             novissis = context!!.getNovissis()
-            novissiAdapter?.update(novissis)
+            filterNovissis()
             swipe_refresh.isRefreshing = false
         }
 
-        return view
+        return fragmentView
+    }
+
+    private fun filterNovissis() {
+        val searchFor = fragmentView.search_edit_text.text.toString().trim()
+        if (searchFor.isNotEmpty()) {
+            val filterNovissis = mutableListOf<MutableMap<String, String>>()
+            for (novissi in novissis) {
+                if (fragmentView.unprocessed_checkBox.isChecked) {
+                    if (!novissi.contains("processed") &&
+                        novissi["id_card"]!!.contains(searchFor, true) ||
+                        !novissi.contains("processed") &&
+                        novissi["last_name"]!!.contains(searchFor, true) ||
+                        !novissi.contains("processed") &&
+                        novissi["first_name"]!!.contains(searchFor, true) ||
+                        !novissi.contains("processed") &&
+                        novissi["born_at"]!!.contains(searchFor, true) ||
+                        !novissi.contains("processed") &&
+                        novissi["mother"]!!.contains(searchFor, true) ||
+                        novissi["phone_number"]!!.contains(searchFor, true)
+                    ) {
+                        filterNovissis.add(novissi)
+                    }
+                } else {
+                    if (novissi["id_card"]!!.contains(searchFor, true) ||
+                        novissi["last_name"]!!.contains(searchFor, true) ||
+                        novissi["first_name"]!!.contains(searchFor, true) ||
+                        novissi["born_at"]!!.contains(searchFor, true) ||
+                        novissi["mother"]!!.contains(searchFor, true) ||
+                        novissi["phone_number"]!!.contains(searchFor, true)
+                    ) {
+                        filterNovissis.add(novissi)
+                    }
+                }
+            }
+            novissiAdapter?.update(filterNovissis)
+        } else {
+            if (fragmentView.unprocessed_checkBox.isChecked) {
+                val filterNovissis = mutableListOf<MutableMap<String, String>>()
+                for (novissi in novissis) {
+                    if (!novissi.containsKey("processed")) {
+                        filterNovissis.add(novissi)
+                    }
+                }
+                novissiAdapter?.update(filterNovissis)
+            } else {
+                novissiAdapter?.update(novissis)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         novissis = context!!.getNovissis()
-        novissiAdapter?.update(novissis)
+        filterNovissis()
     }
 }
