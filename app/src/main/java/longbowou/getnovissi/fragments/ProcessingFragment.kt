@@ -3,16 +3,15 @@ package longbowou.getnovissi.fragments
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_processing.*
 import longbowou.getnovissi.ProcessNovissiAsyncTask
 import longbowou.getnovissi.R
+import longbowou.getnovissi.getNofissis
 import java.io.File
 
 /**
@@ -20,10 +19,10 @@ import java.io.File
  */
 class ProcessingFragment : Fragment() {
 
-    private lateinit var novissis: MutableList<MutableMap<String, String>>
+    lateinit var novissis: MutableList<MutableMap<String, String>>
     private var isProcessing = false
     private var delay = 3000L
-
+    var onDataUpdated: OnDataUpdated? = null
     private val map = HashMap<String, java.util.HashSet<String>>()
 
     override fun onCreateView(
@@ -40,42 +39,7 @@ class ProcessingFragment : Fragment() {
         map["KEY_LOGIN"] = HashSet(listOf())
         map["KEY_ERROR"] = HashSet(listOf())
 
-        val defaultNovissis =
-            context?.assets?.open("novissis.json")?.bufferedReader().use { it?.readText() }
-        val savedNovissis = context?.getSharedPreferences(
-            NOVISSIS,
-            Context.MODE_PRIVATE
-        )?.getString(NOVISSIS, defaultNovissis)
-        val typeConverter = object : TypeToken<MutableList<MutableMap<String, String>>>() {}.type
-        novissis = Gson().fromJson(savedNovissis, typeConverter)
-
-        if (savedNovissis != null) {
-            loggSavedNovissis(savedNovissis)
-        }
-    }
-
-    private fun loggSavedNovissis(novissis: String) {
-        Log.d(TAG, "Saved Novissis")
-        val maxLenth = 4000
-        if (novissis.length > maxLenth) {
-            val chunkCount: Int = novissis.length / maxLenth // integer division
-            for (i in 0..chunkCount) {
-                val max = maxLenth * (i + 1)
-                if (max >= novissis.length) {
-                    Log.d(
-                        TAG,
-                        novissis.substring(maxLenth * i)
-                    )
-                } else {
-                    Log.d(
-                        TAG,
-                        novissis.substring(maxLenth * i, max)
-                    )
-                }
-            }
-        } else {
-            Log.d(TAG, novissis)
-        }
+        novissis = context!!.getNofissis()
     }
 
     private fun saveNovissis() {
@@ -85,9 +49,15 @@ class ProcessingFragment : Fragment() {
             ?.apply()
         val novissisJsonFile = File(context?.filesDir, "novissis.json")
         novissisJsonFile.writeText(novissisJson)
+        onDataUpdated?.onUpdate(novissis)
     }
 
     fun launchNovissiProcessing(novissi: MutableMap<String, String>? = null) {
+        if (isProcessing) {
+            updateUi()
+            return
+        }
+
         var index = 0
 
         val unproccedNovissi = findUnprocessed()
@@ -193,6 +163,10 @@ class ProcessingFragment : Fragment() {
             }
         }
         return null
+    }
+
+    interface OnDataUpdated {
+        fun onUpdate(novissis: MutableList<MutableMap<String, String>>)
     }
 
     companion object {

@@ -31,4 +31,25 @@
         android:tint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_money_bag" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="@color/red"
+        android:tint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_money_bag" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add"
+        app:borderWidth="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="@color/green"
+        android:tint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_money_bag" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

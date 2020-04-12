@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             ProcessingFragment()
 
         val novissisFragment =
-            NovissisFragment()
+            NovissisFragment(processingFragment)
 
         val viewPagerAdapter =
             ViewPagerAdapter(supportFragmentManager, listOf(processingFragment, novissisFragment))
@@ -78,6 +79,26 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // Permission has already been granted
+        }
+    }
+
+    fun hideFloatingActionButtons() {
+        if (fab.visibility == View.VISIBLE) {
+            fab.hide()
+        }
+
+        if (fab_stop.visibility == View.VISIBLE) {
+            fab_stop.hide()
+        }
+    }
+
+    fun showFloatingActionButtons() {
+        if (fab.visibility != View.VISIBLE) {
+            fab.show()
+        }
+
+        if (fab_stop.visibility != View.VISIBLE) {
+            fab_stop.show()
         }
     }
 
