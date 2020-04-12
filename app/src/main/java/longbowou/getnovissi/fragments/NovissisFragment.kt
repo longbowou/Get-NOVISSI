@@ -14,26 +14,33 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_novissis.*
 import kotlinx.android.synthetic.main.fragment_novissis.view.*
-import longbowou.getnovissi.*
+import longbowou.getnovissi.NovissiAdapter
+import longbowou.getnovissi.ProcessNovissiAsyncTask
+import longbowou.getnovissi.R
+import longbowou.getnovissi.activities.MainActivity
+import longbowou.getnovissi.getNovissis
 
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class NovissisFragment(private var processingFragment: ProcessingFragment) : Fragment() {
+class NovissisFragment : Fragment() {
 
     lateinit var novissis: MutableList<MutableMap<String, String>>
+    private var novissiAdapter: NovissiAdapter? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_novissis, container, false)
 
-        novissis = context!!.getNofissis()
-        val adapter = NovissiAdapter(novissis)
+        novissis = context!!.getNovissis()
+        novissiAdapter = NovissiAdapter(novissis)
         view?.recycle_view?.layoutManager = LinearLayoutManager(context)
-        view?.recycle_view?.adapter = adapter
+        view?.recycle_view?.adapter = novissiAdapter
 
         view?.recycle_view?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -90,9 +97,9 @@ class NovissisFragment(private var processingFragment: ProcessingFragment) : Fra
                             filterNovissis.add(novissi)
                         }
                     }
-                    adapter.update(filterNovissis)
+                    novissiAdapter?.update(filterNovissis)
                 } else {
-                    adapter.update(novissis)
+                    novissiAdapter?.update(novissis)
                 }
             }
 
@@ -104,12 +111,18 @@ class NovissisFragment(private var processingFragment: ProcessingFragment) : Fra
 
         })
 
-        processingFragment.onDataUpdated = object : ProcessingFragment.OnDataUpdated {
-            override fun onUpdate(newNovissis: MutableList<MutableMap<String, String>>) {
-                novissis = newNovissis
-                adapter.update(novissis)
-            }
+        view.swipe_refresh.setOnRefreshListener {
+            novissis = context!!.getNovissis()
+            novissiAdapter?.update(novissis)
+            swipe_refresh.isRefreshing = false
         }
+
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        novissis = context!!.getNovissis()
+        novissiAdapter?.update(novissis)
     }
 }

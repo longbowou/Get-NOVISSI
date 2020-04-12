@@ -3,15 +3,22 @@ package longbowou.getnovissi
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import longbowou.getnovissi.fragments.ProcessingFragment
+import java.io.File
 
-fun Context.getNofissis(): MutableList<MutableMap<String, String>> {
-    val defaultNovissis = assets?.open("novissis.json")?.bufferedReader().use { it?.readText() }
-    val savedNovissis = getSharedPreferences(
-        ProcessingFragment.NOVISSIS,
-        Context.MODE_PRIVATE
-    )?.getString(ProcessingFragment.NOVISSIS, defaultNovissis)
+fun Context.getNovissis(): MutableList<MutableMap<String, String>> {
+    val novissisJsonFile = File(filesDir, "novissis.json")
+    val savedNovissis = if (novissisJsonFile.exists()) {
+        novissisJsonFile.readText()
+    } else {
+        assets?.open("novissis.json")?.bufferedReader().use { it?.readText() }
+    }
+
     val typeConverter = object : TypeToken<MutableList<MutableMap<String, String>>>() {}.type
-
     return Gson().fromJson(savedNovissis, typeConverter)
+}
+
+fun Context.saveNovissis(novissis: MutableList<MutableMap<String, String>>) {
+    val novissisJson = Gson().toJson(novissis)
+    val novissisJsonFile = File(filesDir, "novissis.json")
+    novissisJsonFile.writeText(novissisJson)
 }

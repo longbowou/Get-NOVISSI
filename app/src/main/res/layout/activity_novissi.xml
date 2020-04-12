@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.NovissiActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,36 +20,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_novissi" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_money_bag" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/yellow"
-        android:tint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_money_bag" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add"
-        app:borderWidth="0dp"
+        android:id="@+id/fab_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/red"
         android:tint="@color/colorAccent"
+        app:borderWidth="0dp"
         app:srcCompat="@drawable/ic_money_bag" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

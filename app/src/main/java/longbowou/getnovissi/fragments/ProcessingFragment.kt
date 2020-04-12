@@ -1,18 +1,16 @@
 package longbowou.getnovissi.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_processing.*
 import longbowou.getnovissi.ProcessNovissiAsyncTask
 import longbowou.getnovissi.R
-import longbowou.getnovissi.getNofissis
-import java.io.File
+import longbowou.getnovissi.getNovissis
+import longbowou.getnovissi.saveNovissis
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -39,16 +37,11 @@ class ProcessingFragment : Fragment() {
         map["KEY_LOGIN"] = HashSet(listOf())
         map["KEY_ERROR"] = HashSet(listOf())
 
-        novissis = context!!.getNofissis()
+        novissis = context!!.getNovissis()
     }
 
     private fun saveNovissis() {
-        val novissisJson = Gson().toJson(novissis)
-        context?.getSharedPreferences(NOVISSIS, Context.MODE_PRIVATE)
-            ?.edit()?.putString(NOVISSIS, novissisJson)
-            ?.apply()
-        val novissisJsonFile = File(context?.filesDir, "novissis.json")
-        novissisJsonFile.writeText(novissisJson)
+        context?.saveNovissis(novissis)
         onDataUpdated?.onUpdate(novissis)
     }
 

@@ -1,6 +1,7 @@
-package longbowou.getnovissi
+package longbowou.getnovissi.activities
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import longbowou.getnovissi.R
 import longbowou.getnovissi.fragments.NovissisFragment
 import longbowou.getnovissi.fragments.ProcessingFragment
 import longbowou.getnovissi.ussd.MyUSSDController
@@ -31,14 +33,21 @@ class MainActivity : AppCompatActivity() {
             ProcessingFragment()
 
         val novissisFragment =
-            NovissisFragment(processingFragment)
+            NovissisFragment()
 
         val viewPagerAdapter =
-            ViewPagerAdapter(supportFragmentManager, listOf(processingFragment, novissisFragment))
+            ViewPagerAdapter(
+                supportFragmentManager,
+                listOf(processingFragment, novissisFragment)
+            )
         view_pager.adapter = viewPagerAdapter
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             processingFragment.launchNovissiProcessing()
+        }
+
+        fab_add.setOnClickListener {
+            startActivity(Intent(this, NovissiActivity::class.java))
         }
 
         // Here, thisActivity is the current activity
