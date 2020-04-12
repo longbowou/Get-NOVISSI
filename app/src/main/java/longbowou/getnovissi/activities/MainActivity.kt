@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             processingFragment.start()
+            view_pager.setCurrentItem(0, true)
         }
 
         fab_add.setOnClickListener {
