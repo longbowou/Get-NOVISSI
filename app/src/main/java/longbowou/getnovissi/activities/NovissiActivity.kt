@@ -84,8 +84,8 @@ class NovissiActivity :
             novissi!!["mother"] = mother.text.toString().trim().toUpperCase(Locale.ROOT)
             novissi!!["phone_number"] = phone_number.text.toString().trim().toUpperCase(Locale.ROOT)
 
-            if (phone_number.text.toString().isNotEmpty()) {
-                novissi!!["errors"] = phone_number.text.toString().trim()
+            if (errors.text.toString().isNotEmpty()) {
+                novissi!!["errors"] = errors.text.toString().trim()
             } else {
                 novissi!!.remove("errors")
             }

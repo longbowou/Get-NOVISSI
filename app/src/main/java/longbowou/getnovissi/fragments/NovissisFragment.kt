@@ -27,7 +27,7 @@ import longbowou.getnovissi.getNovissis
  */
 class NovissisFragment : Fragment() {
 
-    lateinit var novissis: MutableList<MutableMap<String, String>>
+    private lateinit var novissis: MutableList<MutableMap<String, String>>
     private var novissiAdapter: NovissiAdapter? = null
     private lateinit var fragmentView: View
 

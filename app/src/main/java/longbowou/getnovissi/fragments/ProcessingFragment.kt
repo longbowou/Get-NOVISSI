@@ -17,12 +17,12 @@ import longbowou.getnovissi.saveNovissis
  */
 class ProcessingFragment : Fragment() {
 
-    lateinit var novissis: MutableList<MutableMap<String, String>>
+    private lateinit var novissis: MutableList<MutableMap<String, String>>
     private var novissiAsyncTask: ProcessNovissiAsyncTask? = null
     private var isProcessing = false
     private var canRun = true
     private var delay = 3000L
-    var onDataUpdated: OnDataUpdated? = null
+    private var onDataUpdated: OnDataUpdated? = null
     private val map = HashMap<String, java.util.HashSet<String>>()
 
     override fun onCreateView(
@@ -47,7 +47,7 @@ class ProcessingFragment : Fragment() {
         onDataUpdated?.onUpdate(novissis)
     }
 
-    fun launchNovissiProcessing(novissi: MutableMap<String, String>? = null) {
+    private fun startNovissiProcessing(novissi: MutableMap<String, String>? = null) {
         if (!canRun || isProcessing) {
             updateUi()
             return
@@ -131,7 +131,7 @@ class ProcessingFragment : Fragment() {
                 isProcessing = false
                 updateUi(isRestarting = true)
                 Handler().postDelayed({
-                    launchNovissiProcessing(novissi)
+                    startNovissiProcessing(novissi)
                 }, delay)
             }
 
@@ -166,6 +166,11 @@ class ProcessingFragment : Fragment() {
         step_textview.text = getString(R.string.stopping)
         canRun = false
         novissiAsyncTask?.cancel(true)
+    }
+
+    fun start() {
+        canRun = true
+        startNovissiProcessing()
     }
 
     interface OnDataUpdated {

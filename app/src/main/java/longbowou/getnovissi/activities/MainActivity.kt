@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         view_pager.adapter = viewPagerAdapter
 
         fab.setOnClickListener {
-            processingFragment.launchNovissiProcessing()
+            processingFragment.start()
         }
 
         fab_add.setOnClickListener {
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class ViewPagerAdapter(fm: FragmentManager, var fragments: List<Fragment>) :
+    class ViewPagerAdapter(fm: FragmentManager, private var fragments: List<Fragment>) :
         FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount(): Int = fragments.count()
 
