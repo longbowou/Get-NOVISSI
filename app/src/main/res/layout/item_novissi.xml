@@ -42,13 +42,13 @@
         android:text=""
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/text_view_text_size"
-        app:layout_constraintEnd_toStartOf="@+id/born_at_"
+        app:layout_constraintEnd_toStartOf="@+id/born_at"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/last_name_"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/born_at_"
+        android:id="@+id/born_at"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -56,13 +56,13 @@
         android:text=""
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/text_view_text_size"
-        app:layout_constraintEnd_toStartOf="@+id/mother_"
+        app:layout_constraintEnd_toStartOf="@+id/mother"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/first_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/mother_"
+        android:id="@+id/mother"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -70,13 +70,13 @@
         android:text=""
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/text_view_text_size"
-        app:layout_constraintEnd_toStartOf="@+id/phone_number_"
+        app:layout_constraintEnd_toStartOf="@+id/phone_number"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/born_at_"
+        app:layout_constraintStart_toEndOf="@+id/born_at"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/phone_number_"
+        android:id="@+id/phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -86,7 +86,7 @@
         android:textSize="@dimen/text_view_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/mother_"
+        app:layout_constraintStart_toEndOf="@+id/mother"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View

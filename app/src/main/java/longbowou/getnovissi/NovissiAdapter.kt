@@ -37,14 +37,14 @@ class NovissiAdapter(private var novissis: MutableList<MutableMap<String, String
         holder.itemView.id_card.text = novissi["id_card"]
         holder.itemView.last_name_.text = novissi["last_name"]
         holder.itemView.first_name.text = novissi["first_name"]
-        holder.itemView.born_at_.text = novissi["born_at"]
-        holder.itemView.mother_.text = novissi["mother"]
-        holder.itemView.phone_number_.text = novissi["phone_number"]
+        holder.itemView.born_at.text = novissi["born_at"]
+        holder.itemView.mother.text = novissi["mother"]
+        holder.itemView.phone_number.text = novissi["phone_number"]
 
         if (novissi["processed"] != null) {
-            holder.itemView.phone_number_.setTextColor(holder.itemView.context.getColor(R.color.green))
+            holder.itemView.phone_number.setTextColor(holder.itemView.context.getColor(R.color.green))
         } else {
-            holder.itemView.phone_number_.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
+            holder.itemView.phone_number.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
         }
 
         if (novissi["errors"] !== null) {
@@ -67,15 +67,21 @@ class NovissiAdapter(private var novissis: MutableList<MutableMap<String, String
             }
 
             if (novissi["errors"]!!.contains("born_at")) {
-                holder.itemView.born_at_.setTextColor(holder.itemView.context.getColor(R.color.red))
+                holder.itemView.born_at.setTextColor(holder.itemView.context.getColor(R.color.red))
             } else {
-                holder.itemView.born_at_.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
+                holder.itemView.born_at.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
             }
 
             if (novissi["errors"]!!.contains("mother")) {
-                holder.itemView.mother_.setTextColor(holder.itemView.context.getColor(R.color.red))
+                holder.itemView.mother.setTextColor(holder.itemView.context.getColor(R.color.red))
             } else {
-                holder.itemView.mother_.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
+                holder.itemView.mother.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
+            }
+
+            if (novissi["errors"]!!.contains("phone_number")) {
+                holder.itemView.phone_number.setTextColor(holder.itemView.context.getColor(R.color.red))
+            } else {
+                holder.itemView.phone_number.setTextColor(holder.itemView.context.getColor(R.color.colorPrimary))
             }
         }
 

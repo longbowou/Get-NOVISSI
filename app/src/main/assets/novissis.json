@@ -363,7 +363,7 @@
     "born_at": "25/04/1994",
     "mother": "YAWLUI",
     "phone_number": "92050769",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-03-00-04-01-02-00075",
@@ -534,5 +534,53 @@
     "mother": "NOUNAGNON",
     "phone_number": "90784613",
     "processed": "Yes"
+  },
+  {
+    "id_card": "1-108-05-00-04-02-04-00447",
+    "last_name": "OWLE",
+    "first_name": "KOMIVI",
+    "born_at": "31/12/1986",
+    "mother": "EDOH",
+    "phone_number": "97139984"
+  },
+  {
+    "id_card": "4-002-02-00-02-01-01-00556",
+    "last_name": "KOUBITA",
+    "first_name": "ELENNE",
+    "born_at": "31/12/1992",
+    "mother": "AMOUZOU",
+    "phone_number": "99585402"
+  },
+  {
+    "id_card": "1-103-02-01-05-01-01-00119",
+    "last_name": "EKPE",
+    "first_name": "VICTORINE",
+    "born_at": "31/12/1973",
+    "mother": "ADOUTE",
+    "phone_number": "98047616"
+  },
+  {
+    "id_card": "1-108-04-00-03-01-02-00013",
+    "last_name": "AZIAGNON",
+    "first_name": "AKOSSIWA",
+    "born_at": "03/07/1975",
+    "mother": "FAYOSSE",
+    "phone_number": "98808460"
+  },
+  {
+    "id_card": "1-108-04-00-03-01-02-00013",
+    "last_name": "AZIAGNON",
+    "first_name": "AKOSSIWA",
+    "born_at": "03/07/1975",
+    "mother": "FAYOSSE",
+    "phone_number": "98808460"
+  },
+  {
+    "id_card": "1-107-04-00-08-03-02-00680",
+    "last_name": "ADAMOU-ABDOULAYE",
+    "first_name": "AWA",
+    "born_at": "15/03/1989",
+    "mother": "SEIDOU",
+    "phone_number": "91930711"
   }
 ]
