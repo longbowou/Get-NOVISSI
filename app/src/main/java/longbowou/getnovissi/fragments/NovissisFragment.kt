@@ -42,6 +42,8 @@ class NovissisFragment : Fragment() {
         fragmentView.recycle_view?.layoutManager = LinearLayoutManager(context)
         fragmentView.recycle_view?.adapter = novissiAdapter
 
+        fragmentView.textview_first.text = "Novissis (${novissis.count()})"
+
         fragmentView.recycle_view?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -140,8 +142,10 @@ class NovissisFragment : Fragment() {
                         filterNovissis.add(novissi)
                     }
                 }
+                fragmentView.textview_first.text = "Novissis (${filterNovissis.count()})"
                 novissiAdapter?.update(filterNovissis)
             } else {
+                fragmentView.textview_first.text = "Novissis (${novissis.count()})"
                 novissiAdapter?.update(novissis)
             }
         }
