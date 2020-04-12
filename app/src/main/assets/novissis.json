@@ -23,9 +23,7 @@
     "first_name": "KODJO",
     "born_at": "31/12/1965",
     "mother": "OTCHONA",
-    "phone_number": "90930267",
-    "errors": "{\"id_card\":\"bad id card\"}",
-    "processed": "Yes"
+    "phone_number": "90930267"
   },
   {
     "id_card": "3-004-01-00-08-02-62-97227",
