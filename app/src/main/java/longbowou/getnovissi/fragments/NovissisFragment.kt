@@ -133,6 +133,7 @@ class NovissisFragment : Fragment() {
                     }
                 }
             }
+            fragmentView.textview_first.text = "Novissis (${filterNovissis.count()})"
             novissiAdapter?.update(filterNovissis)
         } else {
             if (fragmentView.unprocessed_checkBox.isChecked) {
