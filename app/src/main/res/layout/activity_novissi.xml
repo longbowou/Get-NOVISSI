@@ -31,6 +31,6 @@
         android:backgroundTint="@color/red"
         android:tint="@color/colorAccent"
         app:borderWidth="0dp"
-        app:srcCompat="@drawable/ic_money_bag" />
+        app:srcCompat="@drawable/ic_data" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

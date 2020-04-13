@@ -10,8 +10,8 @@ import android.os.Build
 import android.provider.Settings
 import android.telecom.TelecomManager
 import android.text.TextUtils
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
-import android.widget.Toast
 import com.romellfudi.ussdlibrary.*
 import java.util.*
 import kotlin.text.replace
@@ -223,6 +223,8 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
 
         const val KEY_ERROR = "KEY_ERROR"
 
+        val TAG = MyUSSDController::class.simpleName
+
         /**
          * The Singleton building method
          *
@@ -247,10 +249,7 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
                         context
                     )
                 } else {
-                    Toast.makeText(
-                        context, "voipUSSD accessibility service is not enabled",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.d(TAG, "voipUSSD accessibility service is not enabled")
                 }
             }
             return isEnabled
@@ -265,11 +264,7 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
                         context
                     )
                 } else {
-                    Toast.makeText(
-                        context,
-                        "Overlay permission have not grant permission.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.d(TAG, "Overlay permission have not grant permission.")
                 }
                 false
             } else
@@ -325,7 +320,7 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
                 activity.getString(stringId)
         }
 
-        protected fun isAccessiblityServicesEnable(context: Context): Boolean {
+        private fun isAccessiblityServicesEnable(context: Context): Boolean {
             val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE)
             if (am != null) {
                 val am = am as AccessibilityManager
@@ -341,7 +336,7 @@ class MyUSSDController private constructor(var context: Context) : USSDInterface
             return false
         }
 
-        protected fun isAccessibilitySettingsOn(context: Context, service: String): Boolean {
+        private fun isAccessibilitySettingsOn(context: Context, service: String): Boolean {
             var accessibilityEnabled = 0
             try {
                 accessibilityEnabled = Settings.Secure.getInt(

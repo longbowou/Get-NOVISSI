@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_processing.*
@@ -28,7 +29,7 @@ class ProcessingFragment : Fragment() {
     private lateinit var logAdapter: LogAdapter
     private var novissiAsyncTask: ProcessNovissiAsyncTask? = null
     private var isProcessing = false
-    private var canRun = true
+    private var isRunning = false
     private var delay = 3000L
     private val map = HashMap<String, java.util.HashSet<String>>()
     private var logs: MutableList<Map<String, String>> = mutableListOf()
@@ -54,10 +55,17 @@ class ProcessingFragment : Fragment() {
         fragmentView.log_recycler_view.adapter = logAdapter
     }
 
-    private fun startNovissiProcessing(novissi: MutableMap<String, String>? = null) {
+    private fun startNovissiProcessing(
+        novissi: MutableMap<String, String>? = null,
+        startRunning: Boolean = false
+    ) {
         novissis = context!!.getNovissis()
 
-        if (!canRun || isProcessing) {
+        if (startRunning) {
+            isRunning = true
+        }
+
+        if (!isRunning || isProcessing) {
             updateUi()
             return
         }
@@ -185,7 +193,7 @@ class ProcessingFragment : Fragment() {
             }
         }
 
-        if (!canRun || !isProcessing) {
+        if (!isRunning || !isProcessing) {
             isProcessing = true
             updateUi(novissi)
             novissiAsyncTask?.execute(novissi)
@@ -204,18 +212,21 @@ class ProcessingFragment : Fragment() {
     }
 
     fun stop() {
-        step_textview.text = getString(R.string.stopping)
-        canRun = false
-        novissiAsyncTask?.cancel(true)
+        if (isRunning) {
+            step_textview.text = getString(R.string.stopping)
+            isRunning = false
+            novissiAsyncTask?.cancel(true)
+        } else {
+            Toast.makeText(context, "Already Stopped", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun start() {
-        canRun = true
-        startNovissiProcessing()
-    }
-
-    companion object {
-        const val NOVISSIS = "NOVISSIS"
-        val TAG = ProcessingFragment::class.java.simpleName
+        if (!isRunning) {
+            isRunning = true
+            startNovissiProcessing(startRunning = true)
+        } else {
+            Toast.makeText(context, "Already Started", Toast.LENGTH_LONG).show()
+        }
     }
 }

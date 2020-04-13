@@ -29,7 +29,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_money_bag" />
+        app:srcCompat="@drawable/ic_shuttle" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_stop"
@@ -39,7 +39,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:backgroundTint="@color/yellow"
         android:tint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_money_bag" />
+        app:srcCompat="@drawable/ic_close" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"
@@ -50,6 +50,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:backgroundTint="@color/green"
         android:tint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_money_bag" />
+        app:srcCompat="@drawable/ic_add_button" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
