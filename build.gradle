@@ -1,3 +1,5 @@
+import org.ajoberstar.grgit.Grgit
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -11,9 +13,16 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.6.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
+        classpath 'org.ajoberstar:grgit:1.5.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+ext {
+    git = Grgit.open()
+    gitVersionCode = git.tag.list().size()
+    gitVersionName = git.describe()
 }
 
 allprojects {
@@ -26,4 +35,9 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task printVersion() {
+    println("Version Code: $gitVersionCode")
+    println("Version Name: $gitVersionName")
 }
