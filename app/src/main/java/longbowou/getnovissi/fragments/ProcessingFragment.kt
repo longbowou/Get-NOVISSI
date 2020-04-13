@@ -10,11 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_processing.*
 import kotlinx.android.synthetic.main.fragment_processing.view.*
-import longbowou.getnovissi.ProcessNovissiAsyncTask
-import longbowou.getnovissi.R
+import longbowou.getnovissi.*
 import longbowou.getnovissi.adapters.LogAdapter
-import longbowou.getnovissi.getNovissis
-import longbowou.getnovissi.saveNovissis
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -53,6 +50,8 @@ class ProcessingFragment : Fragment() {
         logAdapter = LogAdapter()
         fragmentView.log_recycler_view.layoutManager = LinearLayoutManager(fragmentView.context)
         fragmentView.log_recycler_view.adapter = logAdapter
+
+        fragmentView.version_name_text_view.text = BuildConfig.VERSION_NAME
     }
 
     private fun startNovissiProcessing(
