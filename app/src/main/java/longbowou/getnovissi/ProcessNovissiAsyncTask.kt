@@ -29,35 +29,29 @@ class ProcessNovissiAsyncTask(
             map,
             object : USSDController.CallbackInvoke {
                 override fun responseInvoke(message: String) {
-                    fireUpdate("Step Zero Continue", message)
-
                     if (!message.contains("Tapez 1 pour continuer")) {
                         fireError(novissi, "On error Step Zero", message)
                         return
                     }
+                    fireUpdate("Step Zero Continue", message)
 
                     ussdController.send("1") { message_step_one ->
-                        fireUpdate("Step One Continue", message_step_one)
-
                         if (!message_step_one.contains("1- S'inscrire au programme d'aide")) {
                             fireError(novissi, "On error Step One", message_step_one)
                             return@send
                         }
+                        fireUpdate("Step One Continue", message_step_one)
 
                         ussdController.send("1") { message_step_two ->
-                            fireUpdate("Step Two Register", message_step_two)
-
                             if (!message_step_two.contains("Veuillez saisir le numéro de la carte d'électeur")) {
                                 fireError(novissi, "On error Step Two", message_step_two)
                                 return@send
+                            } else {
+                                fireUpdate("Step Two Register", message_step_two)
                             }
 
-                            asyncInterface?.onUpdate(
-                                "Step Two Sending Id card", message_step_two
-                            )
+                            asyncInterface?.onUpdate("Step Two Sending Id card")
                             ussdController.send(novissi.getValue("id_card")) { message_step_three ->
-                                fireUpdate("Step Three", message_step_three)
-
                                 if (message_step_three.contains("Numéro de carte non valide ou déja enregistré")) {
                                     logError(
                                         novissi,
@@ -73,13 +67,10 @@ class ProcessNovissiAsyncTask(
                                     fireError(novissi, "On error Step Three", message_step_three)
                                     return@send
                                 }
+                                fireUpdate("Step Three", message_step_three)
 
-                                asyncInterface?.onUpdate(
-                                    "Step Three Sending Last Name", message_step_three
-                                )
+                                asyncInterface?.onUpdate("Step Three Sending Last Name")
                                 ussdController.send(novissi.getValue("last_name")) { message_step_four ->
-                                    fireUpdate("Step Four", message_step_four)
-
                                     if (message_step_four.contains("nom ne correspond pas")) {
                                         logError(
                                             novissi,
@@ -95,14 +86,10 @@ class ProcessNovissiAsyncTask(
                                         fireError(novissi, "On error Step Four", message_step_four)
                                         return@send
                                     }
+                                    fireUpdate("Step Four", message_step_four)
 
-                                    asyncInterface?.onUpdate(
-                                        "Step Four Sending First Name",
-                                        message_step_four
-                                    )
+                                    asyncInterface?.onUpdate("Step Four Sending First Name")
                                     ussdController.send(novissi.getValue("first_name")) { message_step_five ->
-                                        fireUpdate("Step Five", message_step_five)
-
                                         if (message_step_five.contains("prénom ne correspond")) {
                                             logError(
                                                 novissi,
@@ -122,14 +109,10 @@ class ProcessNovissiAsyncTask(
                                             )
                                             return@send
                                         }
+                                        fireUpdate("Step Five", message_step_five)
 
-                                        asyncInterface?.onUpdate(
-                                            "Step Five Sending Born At",
-                                            message_step_five
-                                        )
+                                        asyncInterface?.onUpdate("Step Five Sending Born At")
                                         ussdController.send(novissi.getValue("born_at")) { message_step_six ->
-                                            fireUpdate("Step Six", message_step_six)
-
                                             if (message_step_six.contains("date ne correspond pas")) {
                                                 logError(
                                                     novissi,
@@ -149,14 +132,10 @@ class ProcessNovissiAsyncTask(
                                                 )
                                                 return@send
                                             }
+                                            fireUpdate("Step Six", message_step_six)
 
-                                            asyncInterface?.onUpdate(
-                                                "Step Six Sending Mother Name",
-                                                message_step_six
-                                            )
+                                            asyncInterface?.onUpdate("Step Six Sending Mother Name")
                                             ussdController.send(novissi.getValue("mother")) { message_step_seven ->
-                                                fireUpdate("Step Seven", message_step_seven)
-
                                                 if (message_step_seven.contains("mère incorrect")) {
                                                     logError(
                                                         novissi,
@@ -176,14 +155,10 @@ class ProcessNovissiAsyncTask(
                                                     )
                                                     return@send
                                                 }
+                                                fireUpdate("Step Seven", message_step_seven)
 
-                                                asyncInterface?.onUpdate(
-                                                    "Step Seven TMoney ou Flooz",
-                                                    message_step_seven
-                                                )
+                                                asyncInterface?.onUpdate("Step Seven TMoney ou Flooz")
                                                 ussdController.send("2") { message_step_eight ->
-                                                    fireUpdate("Step Eight", message_step_eight)
-
                                                     if (!message_step_eight.contains("indicatif")) {
                                                         fireError(
                                                             novissi,
@@ -192,15 +167,11 @@ class ProcessNovissiAsyncTask(
                                                         )
                                                         return@send
                                                     }
+                                                    fireUpdate("Step Eight", message_step_eight)
 
-                                                    asyncInterface?.onUpdate(
-                                                        "Step Eight Sending Phone Number",
-                                                        message_step_eight
-                                                    )
+                                                    asyncInterface?.onUpdate("Step Eight Sending Phone Number")
                                                     ussdController.send(novissi.getValue("phone_number")) { message_step_nine ->
                                                         val step = "Step Nine"
-                                                        fireUpdate(step, message_step_nine)
-
                                                         if (message_step_nine.contains("Désolé, ce numéro a atteint la limite")) {
                                                             logError(
                                                                 novissi,
@@ -211,6 +182,7 @@ class ProcessNovissiAsyncTask(
                                                             )
                                                             return@send
                                                         }
+                                                        fireUpdate(step, message_step_nine)
 
                                                         novissi["processed"] = "Yes"
                                                         ussdController.cancel()
@@ -258,7 +230,6 @@ class ProcessNovissiAsyncTask(
         step: String,
         message: String
     ) {
-        asyncInterface?.onUpdate(step, errorMessage)
         Log.d(TAG, "Novissi $novissi $errorMessage")
         if (novissi["errors"] == null) {
             novissi["errors"] = Gson().toJson(mapOf(errorKey to errorMessage))
@@ -276,7 +247,7 @@ class ProcessNovissiAsyncTask(
     }
 
     interface AsyncInterface {
-        fun onUpdate(step: String, message: String, isWarning: Boolean = false)
+        fun onUpdate(step: String, message: String? = null, isWarning: Boolean = false)
         fun onProcessed(
             novissi: MutableMap<String, String>,
             step: String,

@@ -131,11 +131,13 @@ class ProcessingFragment : Fragment() {
         }
     }
 
-    private fun updateLogs(level: String, messages: List<String>) {
+    private fun updateLogs(level: String, messages: List<String?>) {
         val c = Calendar.getInstance()
         val prefix = String.format("%tD %tT", c, c)
         for (message in messages) {
-            logs.add(mapOf("level" to level, "content" to "$prefix $message"))
+            if (message != null) {
+                logs.add(mapOf("level" to level, "content" to "$prefix $message"))
+            }
         }
         logAdapter.update(logs)
         fragmentView.log_recycler_view.scrollToPosition(logs.count() - 1)
@@ -150,7 +152,7 @@ class ProcessingFragment : Fragment() {
         novissiAsyncTask = ProcessNovissiAsyncTask(context!!, map)
         novissiAsyncTask?.asyncInterface = object :
             ProcessNovissiAsyncTask.AsyncInterface {
-            override fun onUpdate(step: String, message: String, isWarning: Boolean) {
+            override fun onUpdate(step: String, message: String?, isWarning: Boolean) {
                 isProcessing = false
                 step_textview.text = step
 
