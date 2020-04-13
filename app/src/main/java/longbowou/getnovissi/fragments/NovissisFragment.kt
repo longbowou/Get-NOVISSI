@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_novissis.*
 import kotlinx.android.synthetic.main.fragment_novissis.view.*
-import longbowou.getnovissi.NovissiAdapter
 import longbowou.getnovissi.ProcessNovissiAsyncTask
 import longbowou.getnovissi.R
 import longbowou.getnovissi.activities.MainActivity
+import longbowou.getnovissi.adapters.NovissiAdapter
 import longbowou.getnovissi.getNovissis
 
 

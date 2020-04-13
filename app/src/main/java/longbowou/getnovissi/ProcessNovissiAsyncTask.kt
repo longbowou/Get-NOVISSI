@@ -19,7 +19,8 @@ class ProcessNovissiAsyncTask(
     override fun doInBackground(vararg params: MutableMap<String, String>?) {
         val novissi = params[0]!!
 
-        Log.d(TAG, "Processing novissi $novissi")
+        Log.d(TAG, "Initializing $novissi")
+        fireUpdate("Initializing", "$novissi", true)
 
         ussdController = MyUSSDController.getInstance(context, true)
         ussdController.callUSSDInvoke(
@@ -62,7 +63,8 @@ class ProcessNovissiAsyncTask(
                                         novissi,
                                         "id_card",
                                         "bad id card",
-                                        "Step Three bad id card"
+                                        "Step Three bad id card",
+                                        message_step_three
                                     )
                                     return@send
                                 }
@@ -83,7 +85,8 @@ class ProcessNovissiAsyncTask(
                                             novissi,
                                             "last_name",
                                             "bad last name",
-                                            "Step Four bad last name"
+                                            "Step Four bad last name",
+                                            message_step_four
                                         )
                                         return@send
                                     }
@@ -105,7 +108,8 @@ class ProcessNovissiAsyncTask(
                                                 novissi,
                                                 "first_name",
                                                 "bad first name",
-                                                "Step Five bad first name"
+                                                "Step Five bad first name",
+                                                message_step_five
                                             )
                                             return@send
                                         }
@@ -131,7 +135,8 @@ class ProcessNovissiAsyncTask(
                                                     novissi,
                                                     "born_at",
                                                     "bad born at date",
-                                                    "Step Six bad born at date"
+                                                    "Step Six bad born at date",
+                                                    message_step_six
                                                 )
                                                 return@send
                                             }
@@ -157,7 +162,8 @@ class ProcessNovissiAsyncTask(
                                                         novissi,
                                                         "mother",
                                                         "bad mother name",
-                                                        "Step Seven bad mother name"
+                                                        "Step Seven bad mother name",
+                                                        message_step_seven
                                                     )
                                                     return@send
                                                 }
@@ -192,14 +198,16 @@ class ProcessNovissiAsyncTask(
                                                         message_step_eight
                                                     )
                                                     ussdController.send(novissi.getValue("phone_number")) { message_step_nine ->
-                                                        fireUpdate("Step Nine", message_step_nine)
+                                                        val step = "Step Nine"
+                                                        fireUpdate(step, message_step_nine)
 
                                                         if (message_step_nine.contains("Désolé, ce numéro a atteint la limite")) {
                                                             logError(
                                                                 novissi,
                                                                 "phone_number",
                                                                 "phone number has reach limit",
-                                                                "Step Nine phone number has reach limit"
+                                                                "Step Nine phone number has reach limit",
+                                                                message_step_nine
                                                             )
                                                             return@send
                                                         }
@@ -207,7 +215,11 @@ class ProcessNovissiAsyncTask(
                                                         novissi["processed"] = "Yes"
                                                         ussdController.cancel()
                                                         ussdController.callbackMessage = null
-                                                        asyncInterface?.onProcessed(novissi)
+                                                        asyncInterface?.onProcessed(
+                                                            novissi,
+                                                            step,
+                                                            message_step_nine
+                                                        )
                                                     }
                                                 }
                                             }
@@ -228,24 +240,25 @@ class ProcessNovissiAsyncTask(
     private fun fireError(novissi: MutableMap<String, String>, level: String, message: String) {
         Log.d(TAG, level)
         Log.d(TAG, message)
-        asyncInterface?.onError(novissi)
+        asyncInterface?.onError(novissi, level, message)
         ussdController.cancel()
     }
 
-    private fun fireUpdate(level: String, message: String) {
+    private fun fireUpdate(level: String, message: String, isWarning: Boolean = false) {
         Log.d(MyUSSDServiceKT.TAG, level)
         Log.d(TAG, level)
         Log.d(TAG, message)
-        asyncInterface?.onUpdate(level, message)
+        asyncInterface?.onUpdate(level, message, isWarning)
     }
 
     private fun logError(
         novissi: MutableMap<String, String>,
         errorKey: String,
         errorMessage: String,
-        level: String
+        step: String,
+        message: String
     ) {
-        asyncInterface?.onUpdate(level, errorMessage)
+        asyncInterface?.onUpdate(step, errorMessage)
         Log.d(TAG, "Novissi $novissi $errorMessage")
         if (novissi["errors"] == null) {
             novissi["errors"] = Gson().toJson(mapOf(errorKey to errorMessage))
@@ -258,14 +271,19 @@ class ProcessNovissiAsyncTask(
             errors[errorKey] = errorMessage
             novissi["errors"] = Gson().toJson(errors)
         }
-        asyncInterface?.onProcessed(novissi)
+        asyncInterface?.onProcessed(novissi, step, message)
         ussdController.cancel()
     }
 
     interface AsyncInterface {
-        fun onUpdate(step: String, message: String)
-        fun onProcessed(novissi: MutableMap<String, String>)
-        fun onError(novissi: MutableMap<String, String>)
+        fun onUpdate(step: String, message: String, isWarning: Boolean = false)
+        fun onProcessed(
+            novissi: MutableMap<String, String>,
+            step: String,
+            message: String
+        )
+
+        fun onError(novissi: MutableMap<String, String>, step: String, message: String)
     }
 
     companion object {

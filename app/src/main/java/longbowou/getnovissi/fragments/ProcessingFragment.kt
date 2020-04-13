@@ -6,30 +6,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_processing.*
+import kotlinx.android.synthetic.main.fragment_processing.view.*
 import longbowou.getnovissi.ProcessNovissiAsyncTask
 import longbowou.getnovissi.R
+import longbowou.getnovissi.adapters.LogAdapter
 import longbowou.getnovissi.getNovissis
 import longbowou.getnovissi.saveNovissis
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class ProcessingFragment : Fragment() {
 
+    private lateinit var fragmentView: View
     private lateinit var novissis: MutableList<MutableMap<String, String>>
+    private lateinit var logAdapter: LogAdapter
     private var novissiAsyncTask: ProcessNovissiAsyncTask? = null
     private var isProcessing = false
     private var canRun = true
     private var delay = 3000L
     private val map = HashMap<String, java.util.HashSet<String>>()
+    private var logs: MutableList<Map<String, String>> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_processing, container, false)
+        fragmentView = inflater.inflate(R.layout.fragment_processing, container, false)
+        return fragmentView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,6 +48,10 @@ class ProcessingFragment : Fragment() {
         map["KEY_ERROR"] = HashSet(listOf())
 
         novissis = context!!.getNovissis()
+
+        logAdapter = LogAdapter()
+        fragmentView.log_recycler_view.layoutManager = LinearLayoutManager(fragmentView.context)
+        fragmentView.log_recycler_view.adapter = logAdapter
     }
 
     private fun startNovissiProcessing(novissi: MutableMap<String, String>? = null) {
@@ -110,6 +123,18 @@ class ProcessingFragment : Fragment() {
         }
     }
 
+    private fun updateLogs(level: String, messages: List<String>) {
+        val c = Calendar.getInstance()
+        val prefix = String.format("%tD %tT", c, c)
+        for (message in messages) {
+            logs.add(mapOf("level" to level, "content" to "$prefix $message"))
+        }
+        logAdapter.update(logs)
+        fragmentView.log_recycler_view.scrollToPosition(logs.count() - 1)
+        fragmentView.log_textView.text = "Log (${logs.count()})"
+
+    }
+
     private fun processNovissi(
         novissi: MutableMap<String, String>,
         map: java.util.HashMap<String, java.util.HashSet<String>>
@@ -117,26 +142,46 @@ class ProcessingFragment : Fragment() {
         novissiAsyncTask = ProcessNovissiAsyncTask(context!!, map)
         novissiAsyncTask?.asyncInterface = object :
             ProcessNovissiAsyncTask.AsyncInterface {
-            override fun onUpdate(step: String, message: String) {
+            override fun onUpdate(step: String, message: String, isWarning: Boolean) {
                 isProcessing = false
                 step_textview.text = step
+
+                updateLogs(
+                    if (isWarning) LogAdapter.WARNING else LogAdapter.DEBUG,
+                    listOf(step, message)
+                )
             }
 
-            override fun onProcessed(novissi: MutableMap<String, String>) {
+            override fun onProcessed(
+                novissi: MutableMap<String, String>,
+                step: String,
+                message: String
+            ) {
                 isProcessing = false
                 updateUi(isRestarting = true)
                 context?.saveNovissis(novissis)
                 Handler().postDelayed({
                     startNovissiProcessing(novissi)
                 }, delay)
+
+                updateLogs(
+                    if (novissi.containsKey("errors")) LogAdapter.ERROR else LogAdapter.SUCCESS,
+                    listOf(step, message)
+                )
             }
 
-            override fun onError(novissi: MutableMap<String, String>) {
+            override fun onError(
+                novissi: MutableMap<String, String>,
+                step: String,
+                message: String
+            ) {
                 isProcessing = false
                 updateUi(isRestarting = true)
                 Handler().postDelayed({
                     processNovissi(novissi, map)
                 }, delay)
+
+                updateLogs(LogAdapter.DEBUG, listOf(step, message))
             }
         }
 
