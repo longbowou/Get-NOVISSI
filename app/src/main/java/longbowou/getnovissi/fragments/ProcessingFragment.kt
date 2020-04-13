@@ -22,7 +22,6 @@ class ProcessingFragment : Fragment() {
     private var isProcessing = false
     private var canRun = true
     private var delay = 3000L
-    private var onDataUpdated: OnDataUpdated? = null
     private val map = HashMap<String, java.util.HashSet<String>>()
 
     override fun onCreateView(
@@ -42,12 +41,9 @@ class ProcessingFragment : Fragment() {
         novissis = context!!.getNovissis()
     }
 
-    private fun saveNovissis() {
-        context?.saveNovissis(novissis)
-        onDataUpdated?.onUpdate(novissis)
-    }
-
     private fun startNovissiProcessing(novissi: MutableMap<String, String>? = null) {
+        novissis = context!!.getNovissis()
+
         if (!canRun || isProcessing) {
             updateUi()
             return
@@ -62,7 +58,6 @@ class ProcessingFragment : Fragment() {
         }
 
         if (novissi !== null) {
-            saveNovissis()
             index = novissis.indexOf(novissi)
             index++
         }
@@ -130,6 +125,7 @@ class ProcessingFragment : Fragment() {
             override fun onProcessed(novissi: MutableMap<String, String>) {
                 isProcessing = false
                 updateUi(isRestarting = true)
+                context?.saveNovissis(novissis)
                 Handler().postDelayed({
                     startNovissiProcessing(novissi)
                 }, delay)
@@ -171,10 +167,6 @@ class ProcessingFragment : Fragment() {
     fun start() {
         canRun = true
         startNovissiProcessing()
-    }
-
-    interface OnDataUpdated {
-        fun onUpdate(novissis: MutableList<MutableMap<String, String>>)
     }
 
     companion object {

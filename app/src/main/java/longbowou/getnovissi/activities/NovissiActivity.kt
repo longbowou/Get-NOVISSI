@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_novissi.*
 import kotlinx.android.synthetic.main.content_novissi.*
 import longbowou.getnovissi.R
 import longbowou.getnovissi.getNovissis
+import longbowou.getnovissi.onRightDrawableClicked
 import longbowou.getnovissi.saveNovissis
 import java.util.*
 
@@ -42,7 +43,9 @@ class NovissiActivity :
 
             errors.setText(novissi!!["errors"])
             errors.visibility = View.VISIBLE
-
+            errors.onRightDrawableClicked {
+                it.text?.clear()
+            }
             processed.isChecked = novissi!!.containsKey("processed")
             processed.visibility = View.VISIBLE
 
@@ -57,12 +60,14 @@ class NovissiActivity :
                 val searchFor = id_card.text.toString().trim()
                 if (searchFor.isNotEmpty()) {
                     for (currentNovissi in novissis) {
-                        if (currentNovissi["id_card"]!!.contains(searchFor, true)
+                        if (currentNovissi["id_card"]!!.contains(searchFor, true) ||
+                            searchFor.length != 26
                         ) {
-                            id_card.error = "Id Card already exits"
+                            id_card.error = "Incorrect Id Card"
                             break
                         }
                     }
+
                 }
             }
             errors.visibility = View.GONE
@@ -81,8 +86,11 @@ class NovissiActivity :
             novissi!!["last_name"] = last_name.text.toString().trim().toUpperCase(Locale.ROOT)
             novissi!!["first_name"] = first_name.text.toString().trim().toUpperCase(Locale.ROOT)
             novissi!!["born_at"] = born_at.text.toString().trim().toUpperCase(Locale.ROOT)
+                .replace("-", "/")
+                .replace(" ", "/")
             novissi!!["mother"] = mother.text.toString().trim().toUpperCase(Locale.ROOT)
             novissi!!["phone_number"] = phone_number.text.toString().trim().toUpperCase(Locale.ROOT)
+                .replace(" ", "")
 
             if (errors.text.toString().isNotEmpty()) {
                 novissi!!["errors"] = errors.text.toString().trim()
