@@ -497,7 +497,7 @@
     "born_at": "05/04/1994",
     "mother": "IDRISSA",
     "phone_number": "93039181",
-    "errors": "{\"id_card\":\"bad id card\"}"
+    "processed": "Yes"
   },
   {
     "id_card": "1-108-02-00-04-01-03-00189",
@@ -677,6 +677,15 @@
     "born_at": "31/12/1984",
     "mother": "GNAROU",
     "phone_number": "79524305",
+    "processed": "Yes"
+  },
+  {
+    "id_card": "3-004-01-00-14-02-01-00381",
+    "last_name": "PIDABI",
+    "first_name": "ESSO-WAZA",
+    "born_at": "31/12/1975",
+    "mother": "PIGNANDI",
+    "phone_number": "90943815",
     "processed": "Yes"
   }
 ]
