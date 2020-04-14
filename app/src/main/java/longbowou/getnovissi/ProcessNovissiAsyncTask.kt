@@ -182,7 +182,6 @@ class ProcessNovissiAsyncTask(
                                                             )
                                                             return@send
                                                         }
-                                                        fireUpdate(step, message_step_nine)
 
                                                         novissi["processed"] = "Yes"
                                                         ussdController.cancel()

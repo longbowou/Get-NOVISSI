@@ -44,10 +44,16 @@ class NovissiAdapter(private var novissis: MutableList<MutableMap<String, String
         holder.itemView.mother.text = novissi["mother"]
         holder.itemView.phone_number.text = novissi["phone_number"]
 
-        if (novissi["processed"] != null) {
+        if (novissi.containsKey("processed")) {
             holder.itemView.phone_number.setTextColor(
                 holder.itemView.context.getColor(
                     R.color.green
+                )
+            )
+        } else if (novissi.containsKey("errors") && novissi["errors"]!!.contains("phone_number")) {
+            holder.itemView.phone_number.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
             )
         } else {
@@ -58,90 +64,74 @@ class NovissiAdapter(private var novissis: MutableList<MutableMap<String, String
             )
         }
 
-        if (novissi["errors"] !== null) {
-            if (novissi["errors"]!!.contains("id_card")) {
-                holder.itemView.id_card.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
+        if (novissi.containsKey("errors") && novissi["errors"]!!.contains("id_card")) {
+            holder.itemView.id_card.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
-            } else {
-                holder.itemView.id_card.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
+            )
+        } else {
+            holder.itemView.id_card.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.colorPrimary
                 )
-            }
+            )
+        }
 
-            if (novissi["errors"]!!.contains("last_name")) {
-                holder.itemView.last_name_.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
+        if (novissi.containsKey("errors") && novissi["errors"]!!.contains("last_name")) {
+            holder.itemView.last_name_.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
-            } else {
-                holder.itemView.last_name_.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
+            )
+        } else {
+            holder.itemView.last_name_.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.colorPrimary
                 )
-            }
+            )
+        }
 
-            if (novissi["errors"]!!.contains("first_name")) {
-                holder.itemView.first_name.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
+        if (novissi.containsKey("errors") && novissi["errors"]!!.contains("first_name")) {
+            holder.itemView.first_name.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
-            } else {
-                holder.itemView.first_name.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
+            )
+        } else {
+            holder.itemView.first_name.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.colorPrimary
                 )
-            }
+            )
+        }
 
-            if (novissi["errors"]!!.contains("born_at")) {
-                holder.itemView.born_at.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
+        if (novissi.containsKey("errors") && novissi["errors"]!!.contains("born_at")) {
+            holder.itemView.born_at.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
-            } else {
-                holder.itemView.born_at.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
+            )
+        } else {
+            holder.itemView.born_at.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.colorPrimary
                 )
-            }
+            )
+        }
 
-            if (novissi["errors"]!!.contains("mother")) {
-                holder.itemView.mother.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
+        if (novissi.containsKey("errors") && novissi["errors"]!!.contains("mother")) {
+            holder.itemView.mother.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.red
                 )
-            } else {
-                holder.itemView.mother.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
+            )
+        } else {
+            holder.itemView.mother.setTextColor(
+                holder.itemView.context.getColor(
+                    R.color.colorPrimary
                 )
-            }
-
-            if (novissi["errors"]!!.contains("phone_number")) {
-                holder.itemView.phone_number.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.red
-                    )
-                )
-            } else {
-                holder.itemView.phone_number.setTextColor(
-                    holder.itemView.context.getColor(
-                        R.color.colorPrimary
-                    )
-                )
-            }
+            )
         }
 
         holder.itemView.setOnClickListener {
