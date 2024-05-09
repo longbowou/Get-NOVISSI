@@ -6,10 +6,6 @@ This cash transfer program is available through an **\*855# USSD** request.
 **Get NOVISSI** is an **USSD bot** based on android that automate the **\*855# USSD** to get register to NOVISSI
 program.
 
-## Preview
-![preview.mov](preview.mov)
-
-![preview.mp4](preview.mp4)
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
